@@ -1,0 +1,14 @@
+version: '3.8'
+
+volumes:
+  foodgram_db:
+
+services:
+  db:
+    image: postgres:12.4
+    volumes:
+      - foodgram_db:/var/lib/postgresql/data/
+    env_file:
+      - ./.env
+    ports:
+      - '5432:5432'
