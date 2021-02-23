@@ -68,85 +68,55 @@ class Recipe(models.Model):
         unique=True,
         help_text='Введите краткое название рецепта (англ.)'
     )
-
-    measure = models.CharField(
-        'Единицы измерения',
-        unique=True,
-        max_length=15,
+    time_to_cook = models.PositiveSmallIntegerField(
+        'Время готовки в минутах',
+        help_text='Введите год выпуска произведения'
     )
-    description = models.TextField(
-        'Описание ингредиента',
+
+
+class IngredientsInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='ingredients',
+        verbose_name='Рецепт',
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        verbose_name='Ингредиент',
+    )
+    quantity = models.PositiveSmallIntegerField(
+        'Количество',
+        help_text='Сколько класть?'
     )
 
     def __str__(self):
-        return self.name
+        recipe = self.recipe
+        ingredients = self.ingredient
+        quantity = self.quantity
+        return f'{recipe}-{ingredients}-{quantity}'
 
 
-class Post(models.Model):
-    text = models.TextField(
-        'Текст',
-        help_text='Сюда пишем текст поста',
-    )
-    pub_date = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True,
-    )
-    author = models.ForeignKey(
-        User,
+class TagsInRecipe(models.Model):
+    recipe = models.ForeignKey(
+        Recipe,
         on_delete=models.CASCADE,
-        related_name='posts',
-        verbose_name='Автор',
+        related_name='tags',
+        verbose_name='Рецепт',
     )
-    group = models.ForeignKey(
-        Group,
-        on_delete=models.SET_NULL,
-        blank=True,
-        null=True,
-        related_name='posts',
-        verbose_name='Сообщество',
-        help_text='Здесь выбираем сообщество',
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+        verbose_name='Ингредиент',
     )
-    image = models.ImageField(
-        upload_to='posts/',
-        blank=True,
-        null=True
-    )
-
-    class Meta:
-        ordering = ['-pub_date']
 
     def __str__(self):
-        author = self.author
-        text = self.text[:15]
-        return f'{author} - {text}'
-
-    def short_text(self):
-        return self.text[:150]
-
-    short_text.short_description = 'Начало поста'
-
-
-class Comment(models.Model):
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        related_name='comments',
-        verbose_name='Пост',
-    )
-    author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='comments',
-        verbose_name='Автор',
-    )
-    text = models.TextField(
-        'Текст',
-        help_text='Сюда пишем текст комментария',
-    )
-    created = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True,
-    )
+        recipe = self.recipe
+        tag = self.tag
+        return f'{recipe}-{tag}'
 
 
 class Follow(models.Model):
