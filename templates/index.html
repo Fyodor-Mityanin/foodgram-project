@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Рецепты{% endblock %}
+{% block content %}
+    {% include 'parts/nav.html' %}
+    <div class="card-list">
+        {% include 'parts/recipe_card.html' %}
+        {% include 'parts/recipe_card.html' %}
+        {% include 'parts/recipe_card.html' %}
+        {% include 'parts/recipe_card.html' %}
+        {% include 'parts/recipe_card.html' %}
+    </div>
+    {% include 'parts/paginator.html' %}
+{% endblock %}
