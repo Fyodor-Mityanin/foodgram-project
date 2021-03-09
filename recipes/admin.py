@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Recipe, Ingredient, Tag, Follow, IngredientsInRecipe, TagsInRecipe
+from .models import Recipe, Tag, Follow, IngredientsInRecipe, TagsInRecipe, Ingredient
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -17,27 +17,24 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-# class GroupAdmin(admin.ModelAdmin):
-#     list_display = (
-#         'title',
-#         'slug',
-#         'description',
-#     )
-#     search_fields = ('description',)
-#     empty_value_display = '-пусто-'
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'title',
+        'dimension',
+    )
+    search_fields = ('title',)
 
 
-# class CommentAdmin(admin.ModelAdmin):
-#     list_display = (
-#         'pk',
-#         'post',
-#         'text',
-#         'author',
-#         'created',
-#     )
-#     search_fields = ('text',)
-#     list_filter = ('created',)
-#     empty_value_display = '-пусто-'
+class IngredientsInRecipeAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'recipe',
+        'ingredient',
+        'quantity'
+    )
+    search_fields = ('recipe', 'ingredient',)
+
 
 
 class FollowAdmin(admin.ModelAdmin):
@@ -49,7 +46,7 @@ class FollowAdmin(admin.ModelAdmin):
     search_fields = ('author', 'user',)
 
 
-# admin.site.register(Post, PostAdmin)
-# admin.site.register(Group, GroupAdmin)
+admin.site.register(IngredientsInRecipe, IngredientsInRecipeAdmin)
+admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Follow, FollowAdmin)

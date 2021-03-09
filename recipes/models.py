@@ -29,13 +29,9 @@ class Ingredient(models.Model):
         unique=True,
         max_length=200,
     )
-    measure = models.CharField(
+    dimension = models.CharField(
         'Единицы измерения',
-        unique=True,
         max_length=15,
-    )
-    description = models.TextField(
-        'Описание ингредиента',
     )
 
     def __str__(self):
@@ -72,6 +68,9 @@ class Recipe(models.Model):
         'Время готовки в минутах',
         help_text='Введите год выпуска произведения'
     )
+
+    def __str__(self):
+        return self.title
 
 
 class IngredientsInRecipe(models.Model):
