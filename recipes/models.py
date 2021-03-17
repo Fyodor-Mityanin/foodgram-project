@@ -58,6 +58,10 @@ class Recipe(models.Model):
     description = models.TextField(
         'Описание ингредиента',
     )
+    ingredients_in_recipe = models.ManyToManyField(
+        Ingredient,
+        through='IngredientsInRecipe',
+    )
     slug = models.SlugField(
         'Краткое название рецепта (англ.)',
         max_length=50,

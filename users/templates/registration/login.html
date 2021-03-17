@@ -5,7 +5,12 @@
 {% block headcss %}<link rel="stylesheet" href="{% static 'pages/form.css' %}">{% endblock %}
 {% block content %} 
     <div class="main__header">
+        {% if next %}
+        <h1 class="main__title">Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей.<br>
+            Пожалуйста, авторизуйтесь.</h1>
+        {% else %}
         <h1 class="main__title">Войти на сайт</h1>
+        {% endif %}
     </div>
     <div class="form-container">
         <form class="form" action="{% url 'login' %}" method="POST">

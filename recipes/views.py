@@ -3,14 +3,31 @@ from recipes.models import Recipe
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from .models import Recipe
+from django.views.generic import ListView
+# def index(request):
+#     recipes_list = Recipe.objects.all()
+#     paginator = Paginator(recipes_list, 6)
+#     page_number = request.GET.get('page')
+#     page = paginator.get_page(page_number)
+#     return render(
+#         request,
+#         'index.html',
+#         {'page': page, 'paginator': paginator}
+#     )
 
-def index(request):
-    recipes_list = Recipe.objects.all()
-    paginator = Paginator(recipes_list, 10)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+class index(ListView):
+    """Список всех доступных заданий."""
+    model = Recipe
+    paginate_by = 6
+    template_name = 'index.html'
+    context_object_name = 'recipe'
+
+
+
+
+@login_required
+def new_recipe(request):
     return render(
         request,
-        'index.html',
-        {'page': page, 'paginator': paginator}
+        'new_recipe.html',
     )
