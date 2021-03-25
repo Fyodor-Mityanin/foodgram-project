@@ -1,11 +1,32 @@
 {% extends 'base.html' %}
 {% block title %}Рецепты{% endblock %}
 {% block content %}
-    {% include 'parts/nav.html' %}
+    {% include 'parts/nav.html' with path='index' %}
     <div class="card-list">
         {% for recipe in recipe %}
             {% include "parts/recipe_card.html" with recipe=recipe %}
         {% endfor %}
     </div>
     {% include 'parts/paginator.html' with page_obj=page_obj%}
+{% endblock %}
+{% block script %}
+{% load static %}
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+
+<script src="{% static 'js/components/Purchases.js' %}"></script>
+
+{% if user.is_authenticated %}
+<script src="{% static 'js/components/Favorites.js' %}"></script>
+{% endif %}
+
+<script src="./js/config/config.js"></script>
+<script src="./js/components/CardList.js"></script>
+<script src="./js/components/Header.js"></script>
+
+<script src="{% static 'js/api/Api.js' %}"></script>
+{% if user.is_authenticated %}
+<script src="indexAuth.js"></script>
+{% else %}
+<script src="indexNotAuth.js"></script>
+{% endif %}
 {% endblock %}

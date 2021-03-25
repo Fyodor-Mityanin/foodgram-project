@@ -45,8 +45,15 @@ class FollowAdmin(admin.ModelAdmin):
     )
     search_fields = ('author', 'user',)
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'slug',
+        'color',
+    )
 
 admin.site.register(IngredientsInRecipe, IngredientsInRecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Follow, FollowAdmin)
+admin.site.register(Tag, TagAdmin)

@@ -1,22 +1,26 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 
 User = get_user_model()
 
 
 class Tag(models.Model):
-    BREAKFAST = 'B'
-    LUNCH = 'L'
-    DINNER = 'D'
-    RECIPE_TAG = [
-        (BREAKFAST, 'Завтрак'),
-        (LUNCH, 'Обед'),
-        (DINNER, 'Ужин'),
-    ]
     title = models.CharField(
-        'Тэг рецепта',
-        choices=RECIPE_TAG,
-        max_length=1,
+        'Имя тэга',
+        unique=True,
+        max_length=10,
+    )
+    slug = models.SlugField(
+        'Слаг тэга',
+        unique=True,
+        max_length=10,
+        blank=True
+    )
+    color = models.CharField(
+        'Цвет тэга',
+        max_length=10,
+        blank=True
     )
 
     def __str__(self):
@@ -62,6 +66,11 @@ class Recipe(models.Model):
         Ingredient,
         through='IngredientsInRecipe',
     )
+    tags_in_recipe = models.ManyToManyField(
+        Tag,
+        through='TagsInRecipe',
+        blank=True,
+    )
     slug = models.SlugField(
         'Краткое название рецепта (англ.)',
         max_length=50,
@@ -72,9 +81,19 @@ class Recipe(models.Model):
         'Время готовки в минутах',
         help_text='Введите год выпуска произведения'
     )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True,
+    )
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return '/recipe/%s/' % self.slug
+    
+    class Meta:
+        ordering = ['-pub_date']
 
 
 class IngredientsInRecipe(models.Model):
@@ -115,6 +134,9 @@ class TagsInRecipe(models.Model):
         related_name='recipes',
         verbose_name='Ингредиент',
     )
+
+    class Meta:
+        unique_together = ['recipe', 'tag']
 
     def __str__(self):
         recipe = self.recipe
