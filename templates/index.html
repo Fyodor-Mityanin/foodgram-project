@@ -19,14 +19,14 @@
 <script src="{% static 'js/components/Favorites.js' %}"></script>
 {% endif %}
 
-<script src="./js/config/config.js"></script>
-<script src="./js/components/CardList.js"></script>
-<script src="./js/components/Header.js"></script>
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/CardList.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
 
 <script src="{% static 'js/api/Api.js' %}"></script>
 {% if user.is_authenticated %}
-<script src="indexAuth.js"></script>
+<script src="{% static 'indexAuth.js' %}"></script>
 {% else %}
-<script src="indexNotAuth.js"></script>
+<script src="{% static 'indexNotAuth.js' %}"></script>
 {% endif %}
 {% endblock %}

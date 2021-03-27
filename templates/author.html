@@ -3,10 +3,12 @@
 {% load static %}
 {% block content %}
     {% include 'parts/nav.html' with path='author'  %}
+    {% if request.user != author %}
     <!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
     <div class="author-subscribe" data-author="323">
         <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
     </div>
+    {% endif %}
     <div class="card-list">
         {% for recipe in recipe %}
             {% include "parts/recipe_card.html" with recipe=recipe %}
