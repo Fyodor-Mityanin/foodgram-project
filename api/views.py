@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from rest_framework.generics import CreateAPIView
 
-# Create your views here.
+class FollowCreate(CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        
+        return self.create(request, *args, **kwargs)
