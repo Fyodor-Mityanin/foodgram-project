@@ -1,4 +1,4 @@
-from recipes.models import Recipe, User
+from recipes.models import Recipe, User, Follow
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe
 from django.views.generic import ListView, CreateView
@@ -40,5 +40,11 @@ class AuthorList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        try:
+            follow = Follow.objects.filter(user=self.request.user, author=self.author).exists()
+        except TypeError:
+            follow = True
         context['author'] = self.author
+        context['follow'] = follow
+        print(context)
         return context

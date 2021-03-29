@@ -22,9 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes',
+    'api',
     'sorl.thumbnail',
     'rest_framework',
-    'api',
 ]
 
 MIDDLEWARE = [
@@ -117,8 +117,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
 }
-
-APPEND_SLASH=False

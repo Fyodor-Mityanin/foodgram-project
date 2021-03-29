@@ -6,10 +6,11 @@ from recipes.models import Follow, User
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         slug_field='username',
-        read_only=True,
-        default=serializers.CurrentUserDefault(),
+        # read_only=True,
+        queryset=User.objects.all(),
+        # default=serializers.CurrentUserDefault(),
     )
-    following = serializers.SlugRelatedField(
+    author = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
     )
@@ -17,9 +18,9 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Follow
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Follow.objects.all(),
-                fields=('user', 'following')
-            )
-        ]
+        # validators = [
+        #     UniqueTogetherValidator(
+        #         queryset=Follow.objects.all(),
+        #         fields=('user', 'author')
+        #     )
+        # ]
