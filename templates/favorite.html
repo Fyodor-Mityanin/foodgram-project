@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}{% endblock %}
+{% block title %}Избранное{% endblock %}
 {% load static %}
 {% block content %}
     {% include 'parts/nav.html' %}
-    {% if request.user != author %}
-    <div class="author-subscribe" data-author="{{ author.id }}">
-        {% csrf_token %}
-        <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></p>
-    </div>
-    {% endif %}
     <div class="card-list">
         {% for recipe in recipe %}
             {% include "parts/recipe_card.html" with recipe=recipe %}
@@ -21,12 +15,11 @@
 
 <script src="{% static 'recipes/js/components/Purchases.js' %}"></script>
 <script src="{% static 'recipes/js/components/Favorites.js' %}"></script>
-<script src="{% static 'recipes/js/components/Subscribe.js' %}"></script>
 
 <script src="{% static 'recipes/js/config/config.js' %}"></script>
-<script src="{% static 'recipes/js/components/AuthorRecipe.js' %}"></script>
+<script src="{% static 'recipes/js/components/CardList.js' %}"></script>
 <script src="{% static 'recipes/js/components/Header.js' %}"></script>
 
 <script src="{% static 'recipes/js/api/Api.js' %}"></script>
-<script src="{% static 'recipes/authorRecipe.js' %}"></script>
+<script src="{% static 'recipes/favorite.js' %}"></script>
 {% endblock %}

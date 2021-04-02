@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.Index.as_view(), name='index'),
     path('new_recipe/', views.NewRecipe.as_view(), name='new_recipe'),
     path('author/<str:username>/', views.AuthorList.as_view(), name='author'),
+    path('favorite/', views.FavoriteList.as_view(), name='favorite'),
     # path('group/<slug:slug>/', views.group_posts, name='group'),
     # path('new/', views.new_post, name='new_post'),
     # path('follow/', views.follow_index, name='follow_index'),

@@ -1,4 +1,4 @@
-from recipes.models import Recipe, User, Follow
+from recipes.models import Recipe, User, Follow, Favorite
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe
 from django.views.generic import ListView, CreateView
@@ -41,10 +41,25 @@ class AuthorList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            follow = Follow.objects.filter(user=self.request.user, author=self.author).exists()
+            follow = Follow.objects.filter(
+                user=self.request.user, author=self.author).exists()
         except TypeError:
-            follow = True
+            follow = False
         context['author'] = self.author
         context['follow'] = follow
-        print(context)
         return context
+
+
+class FavoriteList(ListView):
+    """Список любимых рецептов."""
+    paginate_by = 6
+    template_name = 'favorite.html'
+    context_object_name = 'recipe'
+
+    def get_queryset(self):
+        favorites = Favorite.objects.select_related('recipe').filter(user=self.request.user)
+        recipe_list = []
+        for i in favorites:
+            recipe_list.append(i.recipe.id)
+        # print(recipe_list)
+        return Recipe.objects.filter(pk__in=recipe_list)

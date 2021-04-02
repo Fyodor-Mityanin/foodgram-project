@@ -1,13 +1,14 @@
-<div class="card" data-id="120">
+<div class="card" data-id="{{ recipe.id }}">
     {% load static %}
     <a href="#" class="link" target="_blank"></a>
     {% load thumbnail %}
+    {% load poll_extras %}
     {% thumbnail recipe.image "100x100" crop="center" upscale=True as im %}
     <img src="{{ im.url }}" alt="Какой-то текст" class="card__image">
     {% endthumbnail %}
     </a>
     <div class="card__body">
-        <a class="card__title link" href="#" target="_blank">{{ recipe.title }}</a>
+        <a class="card__title link" href="{{ recipe.get_absolute_url }}" target="_blank">{{ recipe.title }}</a>
         <ul class="card__items">
 
             <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
@@ -21,9 +22,14 @@
         </div>
     </div>
     <div class="card__footer">
+        {% csrf_token %}
         <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
         {% if user.is_authenticated %}
+        {% if recipe|is_favorite:request.user %}
+        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+        {% else %}
         <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+        {% endif %}
         {% endif %}
     </div>
 </div>

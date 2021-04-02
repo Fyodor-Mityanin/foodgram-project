@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, get_user
 from django.db import models
 from django.urls import reverse
 
@@ -91,9 +91,16 @@ class Recipe(models.Model):
 
     def get_absolute_url(self):
         return '/recipe/%s/' % self.slug
-    
+
     class Meta:
         ordering = ['-pub_date']
+
+    # def favorites_flag(self):
+    #     try:
+    #         favorite = Favorite.objects.filter(user=get_user(), recipe=self)
+    #     except TypeError:
+    #         favorite = False
+    #     return user
 
 
 class IngredientsInRecipe(models.Model):
@@ -132,7 +139,7 @@ class TagsInRecipe(models.Model):
         Tag,
         on_delete=models.CASCADE,
         related_name='recipes',
-        verbose_name='Ингредиент',
+        verbose_name='Тэг',
     )
 
     class Meta:
@@ -148,8 +155,8 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='Подписота',
+        related_name='authors',
+        verbose_name='Юзер',
     )
     author = models.ForeignKey(
         User,
@@ -160,3 +167,21 @@ class Follow(models.Model):
 
     class Meta:
         unique_together = ['user', 'author']
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Юзер',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='inFav',
+        verbose_name='Рецепт',
+    )
+
+    class Meta:
+        unique_together = ['user', 'recipe']

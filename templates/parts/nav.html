@@ -1,9 +1,11 @@
 <div class="main__header">
     <h1 class="main__title">
-        {% if path == 'index' %}
+        {% if request.resolver_match.url_name == 'index' %}
         Рецепты
-        {% elif path == 'author' %}
+        {% elif request.resolver_match.url_name == 'author' %}
         {{ author.get_full_name }}
+        {% elif request.resolver_match.url_name == 'favorite' %}
+        Избранное
         {% endif %}
     </h1>
     <ul class="tags">
