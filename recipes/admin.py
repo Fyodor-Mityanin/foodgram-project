@@ -36,7 +36,6 @@ class IngredientsInRecipeAdmin(admin.ModelAdmin):
     search_fields = ('recipe', 'ingredient',)
 
 
-
 class FollowAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
@@ -45,12 +44,14 @@ class FollowAdmin(admin.ModelAdmin):
     )
     search_fields = ('author', 'user',)
 
+
 class TagAdmin(admin.ModelAdmin):
     list_display = (
         'title',
         'slug',
         'color',
     )
+
 
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = (
@@ -59,9 +60,19 @@ class FavoriteAdmin(admin.ModelAdmin):
         'recipe',
     )
 
+
+class TagsInRecipeAdmin(admin.ModelAdmin):
+    list_display = (
+        'pk',
+        'tag',
+        'recipe',
+    )
+
+
 admin.site.register(IngredientsInRecipe, IngredientsInRecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Follow, FollowAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(TagsInRecipe, TagsInRecipeAdmin)

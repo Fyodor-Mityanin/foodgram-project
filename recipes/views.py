@@ -1,7 +1,7 @@
 from recipes.models import Recipe, User, Follow, Favorite
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import RecipeForm
@@ -63,3 +63,20 @@ class FavoriteList(ListView):
             recipe_list.append(i.recipe.id)
         # print(recipe_list)
         return Recipe.objects.filter(pk__in=recipe_list)
+
+class RecipeDetail(DetailView):
+    """Страниуа рецепта"""
+    model = Recipe
+    template_name = 'recipe_detail.html'
+    context_object_name = 'recipe'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        recipe = context['recipe']
+        try:
+            follow = Follow.objects.filter(
+                user=self.request.user, author=recipe.author).exists()
+        except TypeError:
+            follow = False
+        context['follow'] = follow
+        return context
