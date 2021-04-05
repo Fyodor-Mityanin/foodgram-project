@@ -1,0 +1,69 @@
+
+{% extends 'base.html' %}
+{% block title %}Список покупок{% endblock %}
+{% load static %}
+{% block headcss %}
+<link rel="stylesheet" href="{% static 'recipes/pages/shopList.css' %}">{% endblock %}
+{% block content %}
+<div class="main__header">
+    <h1 class="main__title">Список покупок</h1>
+</div>
+<div class="card-list card-list_column">
+    <ul class="shopping-list">
+        {% for recipe in recipe %}
+        <li class="shopping-list__item" data-id="{{ recipe.id }}">
+            <div class="recipe recipe_reverse">
+                <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="какой-то текст" class="recipe__image recipe__image_big">
+                <h3 class="recipe__title">{{ recipe.title }}</h3>
+                <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
+            </div>
+            {% csrf_token %}
+            <a href="{% url 'remove_favorite' recipe.id %}" class="shopping-list__button link">Удалить</a>
+        </li>
+        {% endfor %}
+
+    </ul>
+    <a href="#"><button class="button button_style_blue">Скачать список</button></a>
+</div>
+{% include 'parts/paginator.html' with page_obj=page_obj%}
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'recipes/js/config/config.js' %}"></script>
+<script src="{% static 'recipes/js/components/Header.js' %}"></script>
+<script src="{% static 'recipes/js/components/ShopList.js' %}"></script>
+<script src="{% static 'recipes/js/api/Api.js' %}"></script>
+<script src="{% static 'recipes/shopList.js' %}"></script>
+{% endblock %}
+
+
+    <div class="card-list card-list_column">
+        <ul class="shopping-list">
+            <li class="shopping-list__item" data-id="111">
+                <div class="recipe recipe_reverse">
+                    <img src="./images/testCardImg.png" alt="какой-то текст" class="recipe__image recipe__image_big">
+                    <h3 class="recipe__title">Французские тосты</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> 20 мин.</p>
+                </div>
+                <a href="#" class="shopping-list__button link">Удалить</a>
+            </li>
+            <li class="shopping-list__item" data-id="1112">
+                <div class="recipe recipe_reverse">
+                    <img src="./images/testCardImg.png" alt="какой-то текст" class="recipe__image recipe__image_big">
+                    <h3 class="recipe__title">Французские тосты</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> 20 мин.</p>
+                </div>
+                <a href="#" class="shopping-list__button link">Удалить</a>
+            </li>
+            <li class="shopping-list__item" data-id="1113">
+                <div class="recipe recipe_reverse">
+                    <img src="./images/testCardImg.png" alt="какой-то текст" class="recipe__image recipe__image_big">
+                    <h3 class="recipe__title">Французские тосты</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> 20 мин.</p>
+                </div>
+                <a href="#" class="shopping-list__button link">Удалить</a>
+            </li>
+        </ul>
+        <a href="#"><button class="button button_style_blue">Скачать список</button></a>
+    </div>

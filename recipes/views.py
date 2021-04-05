@@ -1,4 +1,4 @@
-from recipes.models import Recipe, User, Follow, Favorite
+from recipes.models import Recipe, User, Follow, Favorite, Purchase
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Recipe
 from django.views.generic import ListView, CreateView, DetailView
@@ -50,7 +50,7 @@ class AuthorList(ListView):
         return context
 
 
-class FavoriteList(ListView):
+class FavoriteList(LoginRequiredMixin, ListView):
     """Список любимых рецептов."""
     paginate_by = 6
     template_name = 'favorite.html'
@@ -61,11 +61,10 @@ class FavoriteList(ListView):
         recipe_list = []
         for i in favorites:
             recipe_list.append(i.recipe.id)
-        # print(recipe_list)
         return Recipe.objects.filter(pk__in=recipe_list)
 
 class RecipeDetail(DetailView):
-    """Страниуа рецепта"""
+    """Страница рецепта"""
     model = Recipe
     template_name = 'recipe_detail.html'
     context_object_name = 'recipe'
@@ -80,3 +79,28 @@ class RecipeDetail(DetailView):
             follow = False
         context['follow'] = follow
         return context
+
+class FollowList(LoginRequiredMixin, ListView):
+    """Список подписок"""
+    paginate_by = 3
+    template_name = 'follow.html'
+    context_object_name = 'author'
+
+    def get_queryset(self):
+        follows = Follow.objects.select_related('author').filter(user=self.request.user)
+        author_list = []
+        for i in follows:
+            author_list.append(i.author.id)
+        return User.objects.filter(pk__in=author_list)
+
+class PurchaseList(LoginRequiredMixin, ListView):
+    """Список покупок."""
+    template_name = 'purchase.html'
+    context_object_name = 'recipe'
+
+    def get_queryset(self):
+        purchase = Purchase.objects.select_related('recipe').filter(user=self.request.user)
+        purchase_list = []
+        for i in purchase:
+            purchase_list.append(i.recipe.id)
+        return Recipe.objects.filter(pk__in=purchase_list)

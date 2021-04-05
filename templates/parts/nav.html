@@ -6,8 +6,13 @@
         {{ author.get_full_name }}
         {% elif request.resolver_match.url_name == 'favorite' %}
         Избранное
+        {% elif request.resolver_match.url_name == 'follow' %}
+        Мои подписки
+        {% elif request.resolver_match.url_name == 'purchase' %}
+        Мои покупки
         {% endif %}
     </h1>
+    {% if request.resolver_match.url_name != 'follow' %}
     <ul class="tags">
         <li class="tags__item">
             <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
@@ -22,4 +27,5 @@
             <label for="dinner" class="tags__label">Ужин</label>
         </li>
     </ul>
+    {% endif %}
 </div>

@@ -3,7 +3,7 @@
     <a href="{{ recipe.get_absolute_url }}" class="link" target="_blank"></a>
     {% load thumbnail %}
     {% load poll_extras %}
-    <img src="{% if recipe.image %} {{ recipe.image.url }} {% endif %}" alt="Какой-то текст" class="card__image">
+    <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
     </a>
     <div class="card__body">
         <a class="card__title link" href="{{ recipe.get_absolute_url }}" target="_blank">{{ recipe.title }}</a>
@@ -21,13 +21,19 @@
     </div>
     <div class="card__footer">
         {% csrf_token %}
-        <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
         {% if user.is_authenticated %}
-        {% if recipe|is_favorite:request.user %}
-        <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-        {% else %}
-        <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            {% if recipe|is_purchase:request.user %}
+            <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
+            {% else %}
+            <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+            {% endif %}
         {% endif %}
+        {% if user.is_authenticated %}
+            {% if recipe|is_favorite:request.user %}
+            <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
+            {% else %}
+            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            {% endif %}
         {% endif %}
     </div>
 </div>

@@ -37,15 +37,22 @@
                 </ul>
             </div>
             <ul class="single-card__items">
-                <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span> Добавить в покупки</button></li>
-                <!-- {% if user.is_authenticated and request.user != author %}
-                <div class="author-subscribe" data-author="{{ author.id }}">
-                    {% csrf_token %}
-                    <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></p>
-                </div>
+                <!-- {% if user.is_authenticated %}
+                {% if recipe|is_purchase:request.user %}
+                <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
+                {% else %}
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                {% endif %}
                 {% endif %} -->
-                {% if user.is_authenticated and request.user != author %}
-                <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></li>
+                {% if user.is_authenticated %}
+                    {% if recipe|is_purchase:request.user %}
+                    <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check"></span>Рецепт добавлен</button></li>
+                    {% else %}
+                    <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
+                    {% endif %}
+                    {% if request.user != author %}
+                    <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></li>
+                    {% endif %}
                 {% endif %}
             </ul>
             <div class="single-card__section">
