@@ -1,11 +1,13 @@
 from recipes.models import Recipe, User, Follow, Favorite, Purchase
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, HttpResponse
 from .models import Recipe
 from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import RecipeForm
 from pytils.translit import slugify
+from django.template import loader
+from itertools import chain
 
 
 class Index(ListView):
@@ -57,11 +59,13 @@ class FavoriteList(LoginRequiredMixin, ListView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        favorites = Favorite.objects.select_related('recipe').filter(user=self.request.user)
+        favorites = Favorite.objects.select_related(
+            'recipe').filter(user=self.request.user)
         recipe_list = []
         for i in favorites:
             recipe_list.append(i.recipe.id)
         return Recipe.objects.filter(pk__in=recipe_list)
+
 
 class RecipeDetail(DetailView):
     """Страница рецепта"""
@@ -80,6 +84,7 @@ class RecipeDetail(DetailView):
         context['follow'] = follow
         return context
 
+
 class FollowList(LoginRequiredMixin, ListView):
     """Список подписок"""
     paginate_by = 3
@@ -87,11 +92,13 @@ class FollowList(LoginRequiredMixin, ListView):
     context_object_name = 'author'
 
     def get_queryset(self):
-        follows = Follow.objects.select_related('author').filter(user=self.request.user)
+        follows = Follow.objects.select_related(
+            'author').filter(user=self.request.user)
         author_list = []
         for i in follows:
             author_list.append(i.author.id)
         return User.objects.filter(pk__in=author_list)
+
 
 class PurchaseList(LoginRequiredMixin, ListView):
     """Список покупок."""
@@ -99,8 +106,30 @@ class PurchaseList(LoginRequiredMixin, ListView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        purchase = Purchase.objects.select_related('recipe').filter(user=self.request.user)
+        purchase = Purchase.objects.select_related(
+            'recipe').filter(user=self.request.user)
         purchase_list = []
         for i in purchase:
             purchase_list.append(i.recipe.id)
         return Recipe.objects.filter(pk__in=purchase_list)
+
+
+def PurchaseListDownload(request):
+    response = HttpResponse(content_type='text/txt')
+    response['Content-Disposition'] = 'attachment; filename="purchase_list.txt"'
+    purchase_list = Purchase.objects.select_related(
+        'recipe').filter(user=request.user)
+    ingredients_list = []
+    for purchase in purchase_list:
+        ingredients_list.append(list(purchase.recipe.ingredients.all()))
+    ingredients_list = list(chain(*ingredients_list))
+    clean_ingredients_dict = {}
+    for ingredient in ingredients_list:
+        if ingredient.ingredient in clean_ingredients_dict:
+            clean_ingredients_dict[ingredient.ingredient] += ingredient.quantity
+            continue
+        clean_ingredients_dict[ingredient.ingredient] = ingredient.quantity
+    t = loader.get_template('recipe_list.txt')
+    c = {'data': clean_ingredients_dict}
+    response.write(t.render(c))
+    return response

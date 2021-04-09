@@ -10,6 +10,7 @@ urlpatterns = [
     path('recipe/<slug:slug>/', views.RecipeDetail.as_view(), name='recipe'),
     path('follow/', views.FollowList.as_view(), name='follow'),
     path('purchase/', views.PurchaseList.as_view(), name='purchase'),
+    path('purchase/download', views.PurchaseListDownload, name='purchase_download'),
     # path('new/', views.new_post, name='new_post'),
     # path('follow/', views.follow_index, name='follow_index'),
     # path('<str:username>/', views.profile, name='profile'),

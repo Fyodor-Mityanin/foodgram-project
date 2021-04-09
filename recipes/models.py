@@ -190,7 +190,7 @@ class Purchase(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='Purchases',
+        related_name='purchases',
         verbose_name='Юзер',
     )
     recipe = models.ForeignKey(
