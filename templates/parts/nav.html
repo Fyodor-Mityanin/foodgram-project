@@ -14,18 +14,13 @@
     </h1>
     {% if request.resolver_match.url_name != 'follow' %}
     <ul class="tags">
+        {% load poll_extras %}
+        {% for tag in tags %}
         <li class="tags__item">
-            <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
-            <span class="tags__label">Завтрак</span>
+            <a id="{{tag.slug}}" class="tags__checkbox tags__checkbox_style_{{tag.color}} tags__checkbox{% if tag.slug in tag_list %}_active{% endif %}" 
+            href="{{request.path}}{{tag.slug|tags_link_generator:tag_list}}"></a><span class="tags__label">{{tag.title}}</span>
         </li>
-        <li class="tags__item">
-            <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
-            <span for="lunch" class="tags__label">Обед</span>
-        </li>
-        <li class="tags__item">
-            <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
-            <label for="dinner" class="tags__label">Ужин</label>
-        </li>
+        {% endfor %}
     </ul>
     {% endif %}
 </div>

@@ -1,4 +1,4 @@
-from recipes.models import Recipe, User, Follow, Favorite, Purchase
+from recipes.models import Recipe, User, Follow, Favorite, Purchase, Tag
 from django.shortcuts import get_object_or_404, HttpResponse
 from .models import Recipe
 from django.views.generic import ListView, CreateView, DetailView
@@ -16,6 +16,21 @@ class Index(ListView):
     paginate_by = 6
     template_name = 'index.html'
     context_object_name = 'recipe'
+
+    def get_queryset(self):
+        self.tag_list=self.request.GET.getlist('tag')
+        if not self.tag_list:
+            return Recipe.objects.all()
+        return Recipe.objects.filter(tags_in_recipe__slug__in=self.tag_list)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tags'] = Tag.objects.all()
+        if not self.tag_list:
+            context['tag_list'] = ['breakfast', 'lunch', 'dinner']
+            return context
+        context['tag_list'] = self.tag_list
+        return context
 
 
 class NewRecipe(LoginRequiredMixin, CreateView):
@@ -49,6 +64,7 @@ class AuthorList(ListView):
             follow = False
         context['author'] = self.author
         context['follow'] = follow
+        
         return context
 
 
