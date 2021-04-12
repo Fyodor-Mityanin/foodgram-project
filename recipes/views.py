@@ -10,6 +10,15 @@ from django.template import loader
 from itertools import chain
 
 
+def get_tags(obj, context):
+    context['tags'] = Tag.objects.all()
+    if not obj.tag_list:
+        context['tag_list'] = ['breakfast', 'lunch', 'dinner']
+        return context
+    context['tag_list'] = obj.tag_list
+    return context
+
+
 class Index(ListView):
     """Список всех рецептов."""
     model = Recipe
@@ -18,31 +27,42 @@ class Index(ListView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        self.tag_list=self.request.GET.getlist('tag')
+        self.tag_list = self.request.GET.getlist('tag')
         if not self.tag_list:
             return Recipe.objects.all()
-        return Recipe.objects.filter(tags_in_recipe__slug__in=self.tag_list)
-    
+        return Recipe.objects.filter(tags_in_recipe__slug__in=self.tag_list).distinct()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tags'] = Tag.objects.all()
-        if not self.tag_list:
-            context['tag_list'] = ['breakfast', 'lunch', 'dinner']
-            return context
-        context['tag_list'] = self.tag_list
+        get_tags(self, context)
         return context
 
 
 class NewRecipe(LoginRequiredMixin, CreateView):
     """Создание нового рецепта"""
+    # model = Recipe
     template_name = 'new_recipe.html'
+    # fields = [
+    #     'title',
+    #     'image',
+    #     'description',
+    #     'ingredients_in_recipe',
+    #     'tags_in_recipe',
+    #     'time_to_cook',
+    # ]
     form_class = RecipeForm
-    success_url = reverse_lazy('index')
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['tags'] = Tag.objects.all()
+    #     return context
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.slug = slugify(form.instance.title)[:50]
         return super().form_valid(form)
+    
+    
 
 
 class AuthorList(ListView):
@@ -53,7 +73,10 @@ class AuthorList(ListView):
 
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
-        return Recipe.objects.filter(author=self.author)
+        self.tag_list = self.request.GET.getlist('tag')
+        if not self.tag_list:
+            return Recipe.objects.filter(author=self.author)
+        return Recipe.objects.filter(author=self.author, tags_in_recipe__slug__in=self.tag_list).distinct()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -64,7 +87,7 @@ class AuthorList(ListView):
             follow = False
         context['author'] = self.author
         context['follow'] = follow
-        
+        get_tags(self, context)
         return context
 
 
@@ -75,12 +98,20 @@ class FavoriteList(LoginRequiredMixin, ListView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
+        self.tag_list = self.request.GET.getlist('tag')
         favorites = Favorite.objects.select_related(
             'recipe').filter(user=self.request.user)
         recipe_list = []
         for i in favorites:
             recipe_list.append(i.recipe.id)
-        return Recipe.objects.filter(pk__in=recipe_list)
+        if not self.tag_list:
+            return Recipe.objects.filter(pk__in=recipe_list)
+        return Recipe.objects.filter(pk__in=recipe_list, tags_in_recipe__slug__in=self.tag_list).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        get_tags(self, context)
+        return context
 
 
 class RecipeDetail(DetailView):

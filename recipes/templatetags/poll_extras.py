@@ -19,6 +19,8 @@ def tags_link_generator(tag, tag_list):
     tmp_tag_list = tag_list.copy()
     if tag in tmp_tag_list:
         tmp_tag_list.remove(tag)
+        if not tmp_tag_list:
+            return '?tag=None'
         for i in tmp_tag_list:
             link += f'tag={i}&'
         return link[:-1]
@@ -26,3 +28,7 @@ def tags_link_generator(tag, tag_list):
     for i in tmp_tag_list:
         link += f'tag={i}&'
     return link[:-1]
+
+@register.filter
+def addclass(field, css):
+    return field.as_widget(attrs={'class': css})

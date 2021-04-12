@@ -57,19 +57,22 @@ class Recipe(models.Model):
     image = models.ImageField(
         upload_to='recipes/',
         blank=True,
-        null=True
+        null=True,
+        verbose_name='Загрузить фото',
     )
     description = models.TextField(
-        'Описание ингредиента',
+        'Описание',
     )
     ingredients_in_recipe = models.ManyToManyField(
         Ingredient,
         through='IngredientsInRecipe',
+        verbose_name='Ингредиенты',
     )
     tags_in_recipe = models.ManyToManyField(
         Tag,
         through='TagsInRecipe',
         blank=True,
+        verbose_name='Тэги'
     )
     slug = models.SlugField(
         'Краткое название рецепта (англ.)',
@@ -78,8 +81,8 @@ class Recipe(models.Model):
         help_text='Введите краткое название рецепта (англ.)'
     )
     time_to_cook = models.PositiveSmallIntegerField(
-        'Время готовки в минутах',
-        help_text='Введите год выпуска произведения'
+        'Время приготовления',
+        help_text='Введите время готовки в минутах'
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
@@ -90,7 +93,7 @@ class Recipe(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return '/recipe/%s/' % self.slug
+        return reverse('recipe', kwargs={'slug': self.slug})
 
     class Meta:
         ordering = ['-pub_date']
@@ -185,6 +188,7 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ['user', 'recipe']
+
 
 class Purchase(models.Model):
     user = models.ForeignKey(

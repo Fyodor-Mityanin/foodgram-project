@@ -23,9 +23,9 @@
                 </div>
             </div>
             <ul class="single-card__items">
-                <li class="single-card__item"><span class="badge badge_style_green">Обед</span></li>
-                <li class="single-card__item"><span class="badge badge_style_orange">Завтрак</span></li>
-                <li class="single-card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                {% for tag in recipe.tags.all %}
+                <li class="single-card__item"><span class="badge badge_style_{{tag.tag.color}}">{{tag.tag.title}}</span></li>
+                {% endfor %}  
             </ul>
             <div class="single-card__items single-card__items_column">
                 <p class="single-card__text"><span class="icon-time"></span>{{ recipe.time_to_cook }} мин.</p>
@@ -37,13 +37,6 @@
                 </ul>
             </div>
             <ul class="single-card__items">
-                <!-- {% if user.is_authenticated %}
-                {% if recipe|is_purchase:request.user %}
-                <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
-                {% else %}
-                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-                {% endif %}
-                {% endif %} -->
                 {% if user.is_authenticated %}
                     {% if recipe|is_purchase:request.user %}
                     <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check"></span>Рецепт добавлен</button></li>
