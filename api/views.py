@@ -1,12 +1,11 @@
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin
 from rest_framework.views import APIView
-from recipes.models import Favorite, Follow, User, Recipe, Purchase
-from .serializers import FollowSerializer, FavoriteSerializer, PurchaseSerializer
+from recipes.models import Favorite, Follow, User, Recipe, Purchase, Ingredient
+from .serializers import FollowSerializer, FavoriteSerializer, PurchaseSerializer, IngredientSerializer
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
+from rest_framework.renderers import JSONRenderer
 
 
 class FollowCreate(APIView):
@@ -108,3 +107,11 @@ class PurchaseDelete(APIView):
         Purchase.delete()
         return Response({'success': 'true'})
 
+class IngredientsSearch(APIView):
+    """Находим список ингредиентов"""
+
+    def get(self, request):
+        ingredient_title = request.query_params['query'][:-1]
+        ingredient_queryset = Ingredient.objects.filter(title__startswith=ingredient_title).all()
+        ingredient_serializer = IngredientSerializer(ingredient_queryset, many=True)
+        return Response(ingredient_serializer.data)

@@ -1,5 +1,5 @@
-from recipes.models import Recipe, User, Follow, Favorite, Purchase, Tag
-from django.shortcuts import get_object_or_404, HttpResponse
+from recipes.models import Recipe, User, Follow, Favorite, Purchase, Tag, IngredientsInRecipe, Ingredient
+from django.shortcuts import get_object_or_404, HttpResponse, render, redirect
 from .models import Recipe
 from django.views.generic import ListView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -37,30 +37,63 @@ class Index(ListView):
         get_tags(self, context)
         return context
 
-
-class NewRecipe(LoginRequiredMixin, CreateView):
-    """Создание нового рецепта"""
-    # model = Recipe
-    template_name = 'new_recipe.html'
-    # fields = [
-    #     'title',
-    #     'image',
-    #     'description',
-    #     'ingredients_in_recipe',
-    #     'tags_in_recipe',
-    #     'time_to_cook',
-    # ]
-    form_class = RecipeForm
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['tags'] = Tag.objects.all()
-    #     return context
-
-    def form_valid(self, form):
-        form.instance.author = self.request.user
+def new_recipe(request):
+    form = RecipeForm(request.POST or None, files=request.FILES or None,)
+    ingredients_ids = []
+    for key in form.data:
+        if 'Ingredient' in key:
+            _, id = key.split('_')
+            if id not in ingredients_ids:
+                ingredients_ids.append(id)
+    ingredient_list = []
+    for i in ingredients_ids:
+        nameIngredient = 'nameIngredient_' + i
+        valueIngredient = 'valueIngredient_' + i
+        unitsIngredient = 'unitsIngredient_' + i
+        ingredient_list.append((form.data[nameIngredient], form.data[valueIngredient], form.data[unitsIngredient],) )
+    if form.is_valid() and ingredient_list:
+        form.instance.author = request.user
         form.instance.slug = slugify(form.instance.title)[:50]
-        return super().form_valid(form)
+        form.save()
+        for ingredient in ingredient_list:
+            object = IngredientsInRecipe(recipe=form.instance, ingredient=Ingredient.objects.get(title=ingredient[0]), quantity=ingredient[1])
+            object.save()
+        return redirect(form.instance)
+
+    return render(
+        request,
+        'new_recipe.html',
+        {'form': form, }
+    )
+
+
+
+
+
+# class NewRecipe(LoginRequiredMixin, CreateView):
+#     """Создание нового рецепта"""
+#     # model = Recipe
+#     template_name = 'new_recipe.html'
+#     print('Hello')
+#     # fields = [
+#     #     'title',
+#     #     'image',
+#     #     'description',
+#     #     'ingredients_in_recipe',
+#     #     'tags_in_recipe',
+#     #     'time_to_cook',
+#     # ]
+#     form_class = RecipeForm
+
+#     # def get_context_data(self, **kwargs):
+#     #     context = super().get_context_data(**kwargs)
+#     #     context['tags'] = Tag.objects.all()
+#     #     return context
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         form.instance.slug = slugify(form.instance.title)[:50]
+#         return super().form_valid(form)
     
     
 

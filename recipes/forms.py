@@ -7,7 +7,8 @@ class RecipeForm(models.ModelForm):
     tags_in_recipe = ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         widget=CheckboxSelectMultiple,
-        required=True)
+        required=True
+    )
 
     class Meta:
         model = Recipe
@@ -15,7 +16,6 @@ class RecipeForm(models.ModelForm):
             'title',
             'image',
             'description',
-            'ingredients_in_recipe',
             'tags_in_recipe',
             'time_to_cook',
         )

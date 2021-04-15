@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'api',
     'sorl.thumbnail',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

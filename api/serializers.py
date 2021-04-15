@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
-from recipes.models import Favorite, Follow, Purchase, User, Recipe
+from recipes.models import Favorite, Follow, Ingredient, Purchase, User, Recipe
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -46,3 +46,9 @@ class PurchaseSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Purchase
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['title', 'dimension']
+        model = Ingredient
