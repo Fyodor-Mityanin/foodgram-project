@@ -69,13 +69,13 @@ class TagsInRecipeAdmin(admin.ModelAdmin):
         'recipe',
     )
 
+
 class PurchaseAdmin(admin.ModelAdmin):
     list_display = (
         'pk',
         'user',
         'recipe',
     )
-   
 
 
 admin.site.register(IngredientsInRecipe, IngredientsInRecipeAdmin)

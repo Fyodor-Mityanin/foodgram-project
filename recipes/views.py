@@ -1,14 +1,15 @@
-from recipes.models import Recipe, User, Follow, Favorite, Purchase, Tag, IngredientsInRecipe, Ingredient
-from django.shortcuts import get_object_or_404, HttpResponse, render, redirect
-from .models import Recipe
-from django.views.generic import ListView, DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from .forms import RecipeForm
-from pytils.translit import slugify
-from django.template import loader
 from itertools import chain
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
+from django.template import loader
+from django.views.generic import DetailView, ListView
+from pytils.translit import slugify
+
+from .forms import RecipeForm
+from .models import (Favorite, Follow, Ingredient, IngredientsInRecipe,
+                     Purchase, Recipe, Tag, User)
 
 
 def get_tags(obj, context):
@@ -218,6 +219,14 @@ def recipe_edit(request, slug):
                 (form.data[nameIngredient], form.data[valueIngredient], form.data[unitsIngredient],))
     if form.is_valid() and ingredient_list:
         form.save()
+        ingridients_in_current_recipe = recipe.ingredients.all()
+        list_for_delete = []
+        for ingredient in ingridients_in_current_recipe:
+            current_ing = (ingredient.ingredient.title, str(
+                ingredient.quantity), ingredient.ingredient.dimension)
+            if current_ing not in ingredient_list:
+                list_for_delete.append(ingredient.id)
+        IngredientsInRecipe.objects.filter(id__in=list_for_delete).delete()
         for ingredient in ingredient_list:
             object, created = IngredientsInRecipe.objects.get_or_create(recipe=form.instance, ingredient=Ingredient.objects.get(
                 title=ingredient[0]), quantity=ingredient[1])

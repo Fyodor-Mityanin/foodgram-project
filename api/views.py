@@ -1,11 +1,13 @@
-from rest_framework.views import APIView
-from recipes.models import Favorite, Follow, User, Recipe, Purchase, Ingredient
-from .serializers import FollowSerializer, FavoriteSerializer, PurchaseSerializer, IngredientSerializer
+from django.http import Http404
+from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status
-from django.http import Http404
-from rest_framework.renderers import JSONRenderer
+from rest_framework.views import APIView
+
+from recipes.models import Favorite, Follow, Ingredient, Purchase, Recipe, User
+
+from .serializers import (FavoriteSerializer, FollowSerializer,
+                          IngredientSerializer, PurchaseSerializer)
 
 
 class FollowCreate(APIView):

@@ -3,15 +3,13 @@ from django.forms import (CheckboxSelectMultiple, ModelMultipleChoiceField,
 
 from recipes.models import Recipe, Tag
 
-from .models import Recipe
-
 
 class RecipeForm(models.ModelForm):
     tags_in_recipe = ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         widget=CheckboxSelectMultiple,
         required=True,
-        label = 'Тэги',
+        label='Тэги',
     )
 
     class Meta:
