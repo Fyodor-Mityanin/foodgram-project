@@ -1,5 +1,8 @@
+from django.forms import (CheckboxSelectMultiple, ModelMultipleChoiceField,
+                          models)
+
 from recipes.models import Recipe, Tag
-from django.forms import models, ModelMultipleChoiceField, CheckboxSelectMultiple
+
 from .models import Recipe
 
 
@@ -7,7 +10,8 @@ class RecipeForm(models.ModelForm):
     tags_in_recipe = ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         widget=CheckboxSelectMultiple,
-        required=True
+        required=True,
+        label = 'Тэги',
     )
 
     class Meta:

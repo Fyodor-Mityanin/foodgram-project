@@ -30,9 +30,9 @@
             <div class="single-card__items single-card__items_column">
                 <p class="single-card__text"><span class="icon-time"></span>{{ recipe.time_to_cook }} мин.</p>
                 <ul class="single-card__items">
-                    <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span> {{ recipe.author.get_full_name }}</p></li>
+                    <li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span>{{ recipe.author.get_full_name }}</p></li>
                     {% if user.is_authenticated and user == recipe.author %}
-                    <li class="single-card__item">  <a style="margin-left: 2.5em" href="#" class="single-card__text">Редактировать рецепт</a></li>
+                    <li class="single-card__item">  <a style="margin-left: 2.5em" href="{% url 'recipe_edit' recipe.slug %}" class="single-card__text">Редактировать рецепт</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -43,7 +43,7 @@
                     {% else %}
                     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
                     {% endif %}
-                    {% if request.user != author %}
+                    {% if request.user != recipe.author %}
                     <li class="single-card__item"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></li>
                     {% endif %}
                 {% endif %}

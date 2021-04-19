@@ -1,17 +1,21 @@
 from django import template
+
 from ..models import Favorite, Purchase
 
 register = template.Library()
+
 
 @register.filter
 def is_favorite(recipe, user):
     favorite = Favorite.objects.filter(user=user, recipe=recipe).exists()
     return favorite
 
+
 @register.filter
 def is_purchase(recipe, user):
     purchase = Purchase.objects.filter(user=user, recipe=recipe).exists()
     return purchase
+
 
 @register.filter
 def tags_link_generator(tag, tag_list):
@@ -29,6 +33,14 @@ def tags_link_generator(tag, tag_list):
         link += f'tag={i}&'
     return link[:-1]
 
+
 @register.filter
 def addclass(field, css):
     return field.as_widget(attrs={'class': css})
+
+
+@register.filter
+def addclass_to_boundwidget(BoundWidget, css):
+    css_list = [css.strip() for css in css.split(',')]
+    BoundWidget.data['attrs']['class'] = css_list[0]
+    return BoundWidget

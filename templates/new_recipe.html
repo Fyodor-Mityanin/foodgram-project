@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}Создание рецепта{% endblock %}
+{% block title %}{% if request.resolver_match.url_name == 'new_recipe' %}Создание рецепта{% else %}Редактирование рецепта{% endif %}{% endblock %}
 {% load static %}
 {% load poll_extras %}
 {% block headcss %}<link rel="stylesheet" href="{% static 'recipes/pages/form.css' %}">{% endblock %}
 {% block content %}
 <main class="main container">
     <div class="main__header">
-        <h1 class="main__title">Создание рецепта</h1>
+        <h1 class="main__title">{% if request.resolver_match.url_name == 'new_recipe' %}Создание рецепта{% else %}Редактирование рецепта{% endif %}</h1>
     </div>
     <div class="form-container">
-        <form class="form" method="post" action="{% url 'new_recipe' %}" enctype="multipart/form-data">
+        <form class="form" method="post" action="{% if request.resolver_match.url_name == 'new_recipe' %}{% url 'new_recipe' %}{% else %}{% url 'recipe_edit' recipe.slug %}{% endif %}" enctype="multipart/form-data">
             {% csrf_token %}
-            <!-- {{ form.as_table }} -->
             <div class="form__group">
                 <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
                 <div class="form__field-group">
@@ -23,14 +22,13 @@
                 <p class="form__label">{{form.tags_in_recipe.label}}</p>
                 <div class="form__field-group">
                     <div class="tags">
-                        {{ form.tags_in_recipe }}
-                        <!-- {% for tag in form.tags_in_recipe %}
+                        {% for tag in form.tags_in_recipe %}
                         <div class="tags__item">
-                            <input type="checkbox" name="{{tag.data.name}}" value="{{tag.data.value.instance.id}}" id="{{tag.id_for_label}}" class="tags__checkbox tags__checkbox_style_{{tag.data.value.instance.color}}">
+                            <input type="checkbox" name="{{tag.data.name}}" value="{{tag.data.value.instance.id}}" id="{{tag.id_for_label}}" class="tags__checkbox tags__checkbox_style_{{tag.data.value.instance.color}}" {{tag.data.selected|yesno:"checked,"}}>
                             <label for="{{ tag.id_for_label }}" class="tags__label">{{tag.choice_label}}</label>
                             {{tag.error}}
                         </div>
-                        {% endfor %} -->
+                        {% endfor %}
                     </div>
                     <span class="form__error"></span>
                 </div>
@@ -47,6 +45,15 @@
                         <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
                     </div>
                     <div class="form__field-group-ingredientes-container">
+                        {% for ingredient in recipe.ingredients.all %}
+                        <div class="form__field-item-ingredient" id="ing_{{forloop.counter}}">
+                            <span> {{ingredient.ingredient}} {{ingredient.quantity}}{{ingredient.ingredient.dimension}}</span>
+                            <span class="form__field-item-delete"></span>
+                            <input id="nameIngredient_{{forloop.counter}}" name="nameIngredient_{{forloop.counter}}" type="hidden" value="{{ingredient.ingredient}}">
+                            <input id="valueIngredient_{{forloop.counter}}" name="valueIngredient_{{forloop.counter}}" type="hidden" value="{{ingredient.quantity}}">
+                            <input id="unitsIngredient_{{forloop.counter}}" name="unitsIngredient_{{forloop.counter}}" type="hidden" value="{{ingredient.ingredient.dimension}}">
+                        </div>
+                        {% endfor %}
                     </div>
                     <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
                     <span class="form__error"></span>
@@ -83,7 +90,6 @@
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'recipes/js/components/MainCards.js' %}"></script>
 <script src="{% static 'recipes/js/config/config.js' %}"></script>
 <script src="{% static 'recipes/js/components/Header.js' %}"></script>
 <script src="{% static 'recipes/js/utils/debouncing.js' %}"></script>

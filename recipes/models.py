@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model, get_user
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
@@ -97,13 +97,6 @@ class Recipe(models.Model):
 
     class Meta:
         ordering = ['-pub_date']
-
-    # def favorites_flag(self):
-    #     try:
-    #         favorite = Favorite.objects.filter(user=get_user(), recipe=self)
-    #     except TypeError:
-    #         favorite = False
-    #     return user
 
 
 class IngredientsInRecipe(models.Model):

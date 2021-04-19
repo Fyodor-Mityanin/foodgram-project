@@ -18,9 +18,8 @@ class FollowCreate(APIView):
             'user': request.user.username,
             'author': author.username,
         }
-        # print(f'Дата - {data}')
         serializer = FollowSerializer(data=data)
-        if serializer.is_valid():
+        if serializer.is_valid() and data['user'] != data['author']:
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -107,11 +106,14 @@ class PurchaseDelete(APIView):
         Purchase.delete()
         return Response({'success': 'true'})
 
+
 class IngredientsSearch(APIView):
     """Находим список ингредиентов"""
 
     def get(self, request):
         ingredient_title = request.query_params['query'][:-1]
-        ingredient_queryset = Ingredient.objects.filter(title__startswith=ingredient_title).all()
-        ingredient_serializer = IngredientSerializer(ingredient_queryset, many=True)
+        ingredient_queryset = Ingredient.objects.filter(
+            title__startswith=ingredient_title).all()
+        ingredient_serializer = IngredientSerializer(
+            ingredient_queryset, many=True)
         return Response(ingredient_serializer.data)
