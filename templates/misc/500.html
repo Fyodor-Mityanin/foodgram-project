@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Ошибка сервера{% endblock %}
+{% block content %}
+    <div class="custom-center-block">
+            <p class="custom-text-block">Ошибка сервера</p>
+        <form action="{% url 'index' %}"></form>
+            <div class="custom-button-block">
+                <button class="button button_style_blue">Перейти на главную</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+

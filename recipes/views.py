@@ -22,7 +22,7 @@ def get_tags(obj, context):
 
 
 class Index(ListView):
-    """Список всех рецептов."""
+    '''Список всех рецептов.'''
     model = Recipe
     paginate_by = 6
     template_name = 'index.html'
@@ -41,7 +41,7 @@ class Index(ListView):
 
 
 class AuthorList(ListView):
-    """Список рецептов автора."""
+    '''Список рецептов автора.'''
     paginate_by = 6
     template_name = 'author.html'
     context_object_name = 'recipe'
@@ -67,7 +67,7 @@ class AuthorList(ListView):
 
 
 class FavoriteList(LoginRequiredMixin, ListView):
-    """Список любимых рецептов."""
+    '''Список любимых рецептов.'''
     paginate_by = 6
     template_name = 'favorite.html'
     context_object_name = 'recipe'
@@ -90,7 +90,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
 
 
 class RecipeDetail(DetailView):
-    """Страница рецепта"""
+    '''Страница рецепта'''
     model = Recipe
     template_name = 'recipe_detail.html'
     context_object_name = 'recipe'
@@ -108,7 +108,7 @@ class RecipeDetail(DetailView):
 
 
 class FollowList(LoginRequiredMixin, ListView):
-    """Список подписок"""
+    '''Список подписок'''
     paginate_by = 3
     template_name = 'follow.html'
     context_object_name = 'author'
@@ -123,7 +123,7 @@ class FollowList(LoginRequiredMixin, ListView):
 
 
 class PurchaseList(LoginRequiredMixin, ListView):
-    """Список покупок."""
+    '''Список покупок.'''
     template_name = 'purchase.html'
     context_object_name = 'recipe'
 
@@ -159,21 +159,22 @@ def PurchaseListDownload(request):
 
 @login_required
 def new_recipe(request):
-    """Создание рецепта"""
+    '''Создание рецепта'''
     form = RecipeForm(request.POST or None, files=request.FILES or None,)
-    ingredients_ids = []
-    for key in form.data:
-        if 'Ingredient' in key:
-            _, id = key.split('_')
-            if id not in ingredients_ids:
-                ingredients_ids.append(id)
-    ingredient_list = []
-    for i in ingredients_ids:
-        nameIngredient = 'nameIngredient_' + i
-        valueIngredient = 'valueIngredient_' + i
-        unitsIngredient = 'unitsIngredient_' + i
-        ingredient_list.append(
-            (form.data[nameIngredient], form.data[valueIngredient], form.data[unitsIngredient],))
+    if request.method == 'POST':
+        ingredients_ids = []
+        for key in form.data:
+            if 'Ingredient' in key:
+                _, id = key.split('_')
+                if id not in ingredients_ids:
+                    ingredients_ids.append(id)
+        ingredient_list = []
+        for i in ingredients_ids:
+            nameIngredient = 'nameIngredient_' + i
+            valueIngredient = 'valueIngredient_' + i
+            unitsIngredient = 'unitsIngredient_' + i
+            ingredient_list.append(
+                (form.data[nameIngredient], form.data[valueIngredient], form.data[unitsIngredient],))
     if form.is_valid() and ingredient_list:
         form.instance.author = request.user
         form.instance.slug = slugify(form.instance.title)[:50]
@@ -194,7 +195,7 @@ def new_recipe(request):
 
 @login_required
 def recipe_edit(request, slug):
-    """Редактирование рецепта"""
+    '''Редактирование рецепта'''
     recipe = get_object_or_404(Recipe, slug=slug)
     if recipe.author != request.user:
         return redirect(recipe.get_absolute_url())
@@ -228,8 +229,8 @@ def recipe_edit(request, slug):
                 list_for_delete.append(ingredient.id)
         IngredientsInRecipe.objects.filter(id__in=list_for_delete).delete()
         for ingredient in ingredient_list:
-            object, created = IngredientsInRecipe.objects.get_or_create(recipe=form.instance, ingredient=Ingredient.objects.get(
-                title=ingredient[0]), quantity=ingredient[1])
+            object, created = IngredientsInRecipe.objects.get_or_create(
+                recipe=form.instance, ingredient=Ingredient.objects.get(title=ingredient[0]), quantity=ingredient[1])
             if created:
                 object.save()
         return redirect(form.instance)
@@ -239,3 +240,26 @@ def recipe_edit(request, slug):
         {'form': form,
          'recipe': recipe}
     )
+
+
+@login_required
+def recipe_delete(request, slug):
+    '''Удаление рецепта'''
+    recipe = get_object_or_404(Recipe, slug=slug)
+    if recipe.author != request.user:
+        return redirect(recipe.get_absolute_url())
+    recipe.delete()
+    return redirect('index')
+
+
+def page_not_found(request, exception):
+    return render(
+        request,
+        "misc/404.html",
+        {"path": request.path},
+        status=404
+    )
+
+
+def server_error(request):
+    return render(request, "misc/500.html", status=500)

@@ -9,6 +9,7 @@ urlpatterns = [
     path('favorite/', views.FavoriteList.as_view(), name='favorite'),
     path('recipe/<slug:slug>/', views.RecipeDetail.as_view(), name='recipe'),
     path('recipe/<slug:slug>/edit/', views.recipe_edit, name='recipe_edit'),
+    path('recipe/<slug:slug>/delete/', views.recipe_delete, name='recipe_delete'),
     path('follow/', views.FollowList.as_view(), name='follow'),
     path('purchase/', views.PurchaseList.as_view(), name='purchase'),
     path('purchase/download', views.PurchaseListDownload, name='purchase_download'),

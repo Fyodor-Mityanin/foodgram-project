@@ -11,7 +11,7 @@ from .serializers import (FavoriteSerializer, FollowSerializer,
 
 
 class FollowCreate(APIView):
-    """Подписываемся на автора."""
+    '''Подписываемся на автора.'''
 
     def post(self, request):
         author_id = request.data.get('id')
@@ -28,7 +28,7 @@ class FollowCreate(APIView):
 
 
 class FollowDelete(APIView):
-    """Отписываемся от автора."""
+    '''Отписываемся от автора.'''
 
     def get_object(self, author_id):
         author = get_object_or_404(User, id=author_id)
@@ -44,7 +44,7 @@ class FollowDelete(APIView):
 
 
 class FavoriteCreate(APIView):
-    """Добавляем в избранное."""
+    '''Добавляем в избранное.'''
 
     def post(self, request):
         recipe_id = request.data.get('id')
@@ -61,7 +61,7 @@ class FavoriteCreate(APIView):
 
 
 class FavoriteDelete(APIView):
-    """Удаляем из избранного."""
+    '''Удаляем из избранного.'''
 
     def get_object(self, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -77,7 +77,7 @@ class FavoriteDelete(APIView):
 
 
 class PurchaseCreate(APIView):
-    """Добавляем в покупки."""
+    '''Добавляем в покупки.'''
 
     def post(self, request):
         recipe_id = request.data.get('id')
@@ -94,7 +94,7 @@ class PurchaseCreate(APIView):
 
 
 class PurchaseDelete(APIView):
-    """Удаляем из покупок."""
+    '''Удаляем из покупок.'''
 
     def get_object(self, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
@@ -110,7 +110,7 @@ class PurchaseDelete(APIView):
 
 
 class IngredientsSearch(APIView):
-    """Находим список ингредиентов"""
+    '''Находим список ингредиентов'''
 
     def get(self, request):
         ingredient_title = request.query_params['query'][:-1]
