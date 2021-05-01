@@ -18,7 +18,7 @@
                 <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
             </div>
             {% csrf_token %}
-            <a href="{% url 'remove_favorite' recipe.id %}" class="shopping-list__button link">Удалить</a>
+            <a href="/api/v1/purchases/{{recipe.id}}" class="shopping-list__button link">Удалить</a>
         </li>
         {% endfor %}
 

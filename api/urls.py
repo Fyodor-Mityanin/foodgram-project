@@ -1,14 +1,28 @@
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
 
-from .views import (FavoriteCreate, FavoriteDelete, FollowCreate, FollowDelete,
-                    IngredientsSearch, PurchaseCreate, PurchaseDelete)
+from . import views
+
+v1_router = DefaultRouter()
+
+v1_router.register(
+    'subscriptions',
+    views.SubscriptionsViewSet,
+    basename='SubscriptionsAPI',
+)
+v1_router.register(
+    'favorites',
+    views.FavoritesViewSet,
+    basename='FavoritesAPI',
+)
+v1_router.register(
+    'purchases',
+    views.PurchasesViewSet,
+    basename='PurchasesAPI',
+)
+
 
 urlpatterns = [
-    path('v1/subscriptions/', FollowCreate.as_view(), name='add_subscribe'),
-    path('v1/subscriptions/<int:author_id>/', FollowDelete.as_view(), name='remove_subscribe'),
-    path('v1/favorites/', FavoriteCreate.as_view(), name='add_favorite'),
-    path('v1/favorites/<int:recipe_id>/', FavoriteDelete.as_view(), name='remove_favorite'),
-    path('v1/purchases/', PurchaseCreate.as_view(), name='add_purchase'),
-    path('v1/purchases/<int:recipe_id>/', PurchaseDelete.as_view(), name='remove_favorite'),
-    path('v1/ingredients', IngredientsSearch.as_view(), name='remove_favorite'),
+    path('v1/', include(v1_router.urls)),
+    path('v1/ingredients', views.IngredientsSearch.as_view(), name='remove_favorite'),
 ]

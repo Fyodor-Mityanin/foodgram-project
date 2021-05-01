@@ -1,14 +1,13 @@
+from django.conf import settings
+from django.conf.urls import handler404, handler500
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from django.conf import settings
-from django.conf.urls.static import static
-from django.conf.urls import handler404, handler500
-
 
 from recipes import views as recipes_views
 
-handler404 = "recipes.views.page_not_found"  # noqa
-handler500 = "recipes.views.server_error"  # noqa
+handler404 = 'recipes.views.page_not_found'  # noqa
+handler500 = 'recipes.views.server_error'  # noqa
 
 urlpatterns = [
     path('404/', recipes_views.page_not_found),

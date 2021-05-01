@@ -1,5 +1,5 @@
-from django.http import Http404
-from rest_framework import status
+from django.http import JsonResponse
+from rest_framework import mixins, status, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,113 +9,77 @@ from recipes.models import Favorite, Follow, Ingredient, Purchase, Recipe, User
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           IngredientSerializer, PurchaseSerializer)
 
+SUCCESS_RESPONSE = {'success': 'true'}
+API_BASENAMES = {
+    'SubscriptionsAPI': (User, 'author', ),
+    'FavoritesAPI': (Recipe, 'recipe',),
+    'PurchasesAPI': (Recipe, 'recipe',),
+}
 
-class FollowCreate(APIView):
-    '''Подписываемся на автора.'''
 
-    def post(self, request):
-        author_id = request.data.get('id')
-        author = get_object_or_404(User, id=author_id)
+class CreateDestroyViewSet(viewsets.GenericViewSet,
+                           mixins.CreateModelMixin,
+                           mixins.DestroyModelMixin):
+    pass
+
+
+class CommonAPIViewSet(CreateDestroyViewSet):
+    queryset = None
+    serializer_class = None
+
+    def get_data(self, request):
+        id = request.data.get('id')
+        obj = get_object_or_404(API_BASENAMES[self.basename][0], id=id)
         data = {
             'user': request.user.username,
-            'author': author.username,
+            API_BASENAMES[self.basename][1]: str(obj),
         }
-        serializer = FollowSerializer(data=data)
-        if serializer.is_valid() and data['user'] != data['author']:
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return data
+
+    def get_obj(self):
+        id = self.kwargs.get('pk')
+        if self.basename == 'SubscriptionsAPI':
+            return get_object_or_404(Follow, user=self.request.user, author__id=id)
+        if self.basename == 'FavoritesAPI':
+            return get_object_or_404(Favorite, user=self.request.user, recipe__id=id)
+        if self.basename == 'PurchasesAPI':
+            return get_object_or_404(Purchase, user=self.request.user, recipe__id=id)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=self.get_data(request))
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_obj()
+        self.perform_destroy(instance)
+        return JsonResponse(SUCCESS_RESPONSE)
 
 
-class FollowDelete(APIView):
-    '''Отписываемся от автора.'''
-
-    def get_object(self, author_id):
-        author = get_object_or_404(User, id=author_id)
-        try:
-            return Follow.objects.get(user=self.request.user, author=author)
-        except Follow.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, author_id, format=None):
-        follow = self.get_object(author_id)
-        follow.delete()
-        return Response({'success': 'true'})
+class SubscriptionsViewSet(CommonAPIViewSet):
+    queryset = Follow.objects.all()
+    serializer_class = FollowSerializer
 
 
-class FavoriteCreate(APIView):
-    '''Добавляем в избранное.'''
-
-    def post(self, request):
-        recipe_id = request.data.get('id')
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        data = {
-            'user': request.user.username,
-            'recipe': recipe.slug,
-        }
-        serializer = FavoriteSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class FavoritesViewSet(CommonAPIViewSet):
+    queryset = Favorite.objects.all()
+    serializer_class = FavoriteSerializer
 
 
-class FavoriteDelete(APIView):
-    '''Удаляем из избранного.'''
-
-    def get_object(self, recipe_id):
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        try:
-            return Favorite.objects.get(user=self.request.user, recipe=recipe)
-        except Favorite.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, recipe_id, format=None):
-        favorite = self.get_object(recipe_id)
-        favorite.delete()
-        return Response({'success': 'true'})
-
-
-class PurchaseCreate(APIView):
-    '''Добавляем в покупки.'''
-
-    def post(self, request):
-        recipe_id = request.data.get('id')
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        data = {
-            'user': request.user.username,
-            'recipe': recipe.slug,
-        }
-        serializer = PurchaseSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class PurchaseDelete(APIView):
-    '''Удаляем из покупок.'''
-
-    def get_object(self, recipe_id):
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        try:
-            return Purchase.objects.get(user=self.request.user, recipe=recipe)
-        except Purchase.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, recipe_id, format=None):
-        Purchase = self.get_object(recipe_id)
-        Purchase.delete()
-        return Response({'success': 'true'})
+class PurchasesViewSet(CommonAPIViewSet):
+    queryset = Purchase.objects.all()
+    serializer_class = PurchaseSerializer
 
 
 class IngredientsSearch(APIView):
-    '''Находим список ингредиентов'''
+    """Находим список ингредиентов"""
 
     def get(self, request):
         ingredient_title = request.query_params['query'][:-1]
         ingredient_queryset = Ingredient.objects.filter(
-            title__startswith=ingredient_title).all()
+            title__icontains=ingredient_title).all()
         ingredient_serializer = IngredientSerializer(
             ingredient_queryset, many=True)
         return Response(ingredient_serializer.data)

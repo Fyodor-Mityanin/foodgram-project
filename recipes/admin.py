@@ -1,5 +1,3 @@
-'''This script prompts a user to enter a message to encode or decode
-    3  using a classic Caeser shift substitution (3 letter shift)'''
 from django.contrib import admin
 
 from .models import (Favorite, Follow, Ingredient, IngredientsInRecipe,
@@ -7,7 +5,7 @@ from .models import (Favorite, Follow, Ingredient, IngredientsInRecipe,
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    '''Админка для рецептов'''
+    """Админка для рецептов"""
     list_display = (
         'pk',
         'author',
@@ -22,7 +20,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
-    '''Админка для ингридиентов'''
+    """Админка для ингридиентов"""
     list_display = (
         'pk',
         'title',

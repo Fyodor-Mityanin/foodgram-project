@@ -16,6 +16,13 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Follow
+        validators = [
+            serializers.UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=('user', 'author'),
+                message=('This follow is already exist')
+            )
+        ]
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
@@ -25,7 +32,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
     )
     recipe = serializers.SlugRelatedField(
         queryset=Recipe.objects.all(),
-        slug_field='slug',
+        slug_field='title',
     )
 
     class Meta:
@@ -40,7 +47,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
     )
     recipe = serializers.SlugRelatedField(
         queryset=Recipe.objects.all(),
-        slug_field='slug',
+        slug_field='title',
     )
 
     class Meta:
