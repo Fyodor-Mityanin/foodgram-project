@@ -1,21 +1,25 @@
 <div class="card-user" data-author="{{ author.id }}">
     <div class="card-user__header">
-        <h2 class="card-user__title">{{ author.get_full_name }}</h2>
+        <a class="card-user__title" href="{% url 'author' author.username %}"> {{ author.get_full_name }} </a>
     </div>
     <div class="card-user__body">
         <ul class="card-user__items">
             {% for recipe in recipes|slice:":3" %}
-                <li class="card-user__item">
-                    <div class="recipe">
-                        <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% load static %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="какой-то-текст" class="recipe__image">
-                        <h3 class="recipe__title">{{ recipe.title }}</h3>
-                        <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
-                    </div>
-                </li>
+            <li class="card-user__item">
+                <div class="recipe">
+                    <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% load static %} {% static 'recipes/nophoto.png' %} {% endif %}"
+                        alt="какой-то-текст" class="recipe__image">
+                    <a class="recipe__title" href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
+                    <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
+                </div>
+            </li>
             {% endfor %}
             {% if recipes.count > 3 %}
             <li class="card-user__item">
-                <a href="{% url 'author' author.username %}" class="card-user__link link">Еще {{ recipes.count|add:"-3" }} рецептов...</a>
+                {% load custom_filters %}
+                {% with count=recipes.count|add:"-3" %}
+                <a href="{% url 'author' author.username %}" class="card-user__link link">Еще {{ count }} {{ count|ru_pluralize:"рецепт,рецепта,рецептов" }}...</a>
+                {% endwith %}
             </li>
             {% endif %}
         </ul>

@@ -1,29 +1,34 @@
 <header class="header"></header>
-    <nav class="nav">
-        <div class="nav__container container">
+<nav class="nav">
+    <div class="nav__container container">
+        <ul class="nav__items list">
+            {% url 'index' as index_url %}
+            {% include 'elements\nav_item.html' with text='Рецепты' url=index_url %}
             {% if user.is_authenticated %}
-                <ul class="nav__items list">
-                    <li class="nav__item {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'recipe' %} nav__item_active {% endif %}"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-                    <li class="nav__item {% if request.resolver_match.url_name == 'follow' %} nav__item_active {% endif %}"><a href="{% url 'follow' %}" class="nav__link link">Мои подписки</a></li>
-                    <li class="nav__item {% if request.resolver_match.url_name == 'new_recipe' %} nav__item_active {% endif %}"><a href="{% url 'new_recipe' %}" class="nav__link link">Создать рецепт</a></li>
-                    <li class="nav__item {% if request.resolver_match.url_name == 'favorite' %} nav__item_active {% endif %}"><a href="{% url 'favorite' %}" class="nav__link link">Избранное</a></li>
-                    <li class="nav__item {% if request.resolver_match.url_name == 'purchase' %} nav__item_active {% endif %}"><a href="{% url 'purchase' %}" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">{{ request.user.purchases.count }}</span> </li>
-            
-                </ul>
-                <ul class="nav__items list">
-                    <li class="nav__item"><a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a></li>
-                    <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход {{ user.username }}</a></li>
-                </ul>
-            {% else %}
-                <ul class="nav__items list">
-                    <li class="nav__item nav__item_active"><a href="{% url 'index' %}" class="nav__link link">Рецепты</a></li>
-                    <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок <span class="badge badge_style_blue nav__badge" id="counter"> {{request.user.}}</span></a></li>
-                </ul>
-                <ul class="nav__items list">
-                    <li class="nav__item"><a href="{% url 'login' %}" class="nav__link link">Войти</a></li>
-                    <li class="nav__item"><a href="{% url 'signup' %}" class="button button_style_blue">Создать аккаунт</a></li>
-                </ul>
+            {% url 'follow' as follow_url %}
+            {% include 'elements\nav_item.html' with text='Мои подписки' url=follow_url %}
+            {% url 'new_recipe' as new_recipe_url %}
+            {% include 'elements\nav_item.html' with text='Создать рецепт' url=new_recipe_url %}
+            {% url 'favorite' as favorite_url %}
+            {% include 'elements\nav_item.html' with text='Избранное' url=favorite_url %}
             {% endif %}
-        </div>
-    </nav>
+            {% url 'purchase' as purchase_url %}
+            {% include 'elements\nav_item_purchase.html' with text='Список покупок' url=purchase_url %}
+        </ul>
+        <ul class="nav__items list">
+            {% if user.is_authenticated %}
+            {% url 'password_change' as password_change_url %}
+            {% include 'elements\nav_item.html' with text='Изменить пароль' url=password_change_url %}
+            {% url 'logout' as logout_url %}
+            {% include 'elements\nav_item.html' with text='Выход' url=logout_url %}
+            {{ user.username }}
+            {% else %}
+            {% url 'login' as login_url %}
+            {% include 'elements\nav_item.html' with text='Войти' url=login_url %}
+            {% url 'signup' as signup_url %}
+            {% include 'elements\nav_item.html' with text='Создать аккаунт' url=signup_url %}
+            {% endif %}
+        </ul>
+    </div>
+</nav>
 </header>

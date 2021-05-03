@@ -2,21 +2,23 @@
 {% block title %}Войти на сайт{% endblock %}
 {% load static %}
 {% load custom_filters %}
-{% block headcss %}<link rel="stylesheet" href="{% static 'users/pages/form.css' %}">{% endblock %}
+{% block headcss %}
+<link rel="stylesheet" href="{% static 'users/pages/form.css' %}">{% endblock %}
 {% block content %}
-    {% if next %}
-    {% include 'elements/main_header.html' with text='Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей.<br>
-    Пожалуйста, авторизуйтесь.' %}
-    {% else %}
-    {% include 'elements/main_header.html' with text='Войти на сайт' %}
-    {% endif %}
-    <div class="form-container">
-        <form class="form" action="{% url 'login' %}" method="POST">
-            {% csrf_token %}
-            {% for field in form %}
-                {% include 'blocks\form_group.html' with field=field %}
-            {% endfor %}
-            {% include 'elements/form_footer_button.html' with text='Войти' with_link=True %}
-        </form>
-    </div>
+{% if next %}
+{% include 'elements/main_header.html' with text='Вы обратились к странице, доступ к которой возможен только для
+залогиненных пользователей.<br>
+Пожалуйста, авторизуйтесь.' %}
+{% else %}
+{% include 'elements/main_header.html' with text='Войти на сайт' %}
+{% endif %}
+<div class="form-container">
+    <form class="form" action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        {% include 'blocks\form_group.html' with field=field %}
+        {% endfor %}
+        {% include 'elements/form_footer_button.html' with text='Войти' with_link=True %}
+    </form>
+</div>
 {% endblock %}

@@ -25,7 +25,7 @@ class Index(ListView):
     """Список всех рецептов."""
     model = Recipe
     paginate_by = 6
-    template_name = 'index.html'
+    template_name = 'recipes/index.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
@@ -43,7 +43,7 @@ class Index(ListView):
 class AuthorList(ListView):
     """Список рецептов автора."""
     paginate_by = 6
-    template_name = 'author.html'
+    template_name = 'recipes/author.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
@@ -69,7 +69,7 @@ class AuthorList(ListView):
 class FavoriteList(LoginRequiredMixin, ListView):
     """Список любимых рецептов."""
     paginate_by = 6
-    template_name = 'favorite.html'
+    template_name = 'recipes/favorite.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
@@ -92,7 +92,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
 class RecipeDetail(DetailView):
     """Страница рецепта"""
     model = Recipe
-    template_name = 'recipe_detail.html'
+    template_name = 'recipes/recipe_detail.html'
     context_object_name = 'recipe'
 
     def get_context_data(self, **kwargs):
@@ -110,7 +110,7 @@ class RecipeDetail(DetailView):
 class FollowList(LoginRequiredMixin, ListView):
     """Список подписок"""
     paginate_by = 3
-    template_name = 'follow.html'
+    template_name = 'recipes/follow.html'
     context_object_name = 'author'
 
     def get_queryset(self):
@@ -124,7 +124,7 @@ class FollowList(LoginRequiredMixin, ListView):
 
 class PurchaseList(LoginRequiredMixin, ListView):
     """Список покупок."""
-    template_name = 'purchase.html'
+    template_name = 'recipes/purchase.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
@@ -151,7 +151,7 @@ def PurchaseListDownload(request):
             clean_ingredients_dict[ingredient.ingredient] += ingredient.quantity
             continue
         clean_ingredients_dict[ingredient.ingredient] = ingredient.quantity
-    t = loader.get_template('recipe_list.txt')
+    t = loader.get_template('recipes/recipe_list.txt')
     c = {'data': clean_ingredients_dict}
     response.write(t.render(c))
     return response
@@ -187,7 +187,7 @@ def new_recipe(request):
 
     return render(
         request,
-        'new_recipe.html',
+        'recipes/new_recipe.html',
         {'form': form,
          }
     )
@@ -236,7 +236,7 @@ def recipe_edit(request, slug):
         return redirect(form.instance)
     return render(
         request,
-        'new_recipe.html',
+        'recipes/new_recipe.html',
         {'form': form,
          'recipe': recipe}
     )
@@ -249,7 +249,7 @@ def recipe_delete(request, slug):
     if recipe.author != request.user:
         return redirect(recipe.get_absolute_url())
     recipe.delete()
-    return redirect('index')
+    return redirect('recipes/index')
 
 
 def page_not_found(request, exception):

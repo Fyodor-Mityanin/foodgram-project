@@ -1,0 +1,4 @@
+<li class="nav__item {% if request.path == url %} nav__item_active {% endif %}">
+    <a href="{{ url }}" class="nav__link link">{{ text }}</a>
+    <span class="badge badge_style_blue nav__badge" id="counter">{% if request.user.purchases.count %}{{ request.user.purchases.count }}{% endif %}</span>
+</li>

@@ -1,0 +1,15 @@
+<h1 class="main__title">
+    {% with curent_url=request.resolver_match.url_name %}
+    {% if curent_url == 'index' %} 
+    Рецепты 
+    {% elif curent_url == 'author' %} 
+    {{ author.get_full_name }} 
+    {% elif curent_url == 'favorite' %} 
+    Избранное 
+    {% elif curent_url == 'follow' %} 
+    Мои подписки 
+    {% elif curent_url == 'purchase' %} 
+    Мои покупки 
+    {% endif %}
+    {% endwith %}
+</h1>

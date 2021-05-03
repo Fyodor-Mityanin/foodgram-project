@@ -44,3 +44,18 @@ def addclass_to_boundwidget(BoundWidget, css):
     css_list = [css.strip() for css in css.split(',')]
     BoundWidget.data['attrs']['class'] = css_list[0]
     return BoundWidget
+
+
+@register.filter
+def ru_pluralize(value, arg):
+    args = arg.split(",")
+    number = abs(int(value))
+    a = number % 10
+    b = number % 100
+
+    if (a == 1) and (b != 11):
+        return args[0]
+    elif (a >= 2) and (a <= 4) and ((b < 10) or (b >= 20)):
+        return args[1]
+    else:
+        return args[2]

@@ -3,14 +3,14 @@
 {% load static %}
 {% block headcss %}<link rel="stylesheet" href="{% static 'users/pages/form.css' %}">{% endblock %}
 {% block content %}
-    {% include 'elements/main_header.html' with text='Регистрация' %}
-    <div class="form-container">
-        <form class="form" action="{% url 'signup' %}" method="POST">
-            {% csrf_token %}
-            {% for field in form %}
-                {% include 'blocks\form_group.html' with field=field %}
-            {% endfor %}
-            {% include 'elements/form_footer_button.html' with text='Создать аккаунт'%}
-        </form>
-    </div>
+{% include 'elements/main_header.html' with text='Регистрация' %}
+<div class="form-container">
+    <form class="form" action="{% url 'signup' %}" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        {% include 'blocks\form_group.html' with field=field %}
+        {% endfor %}
+        {% include 'elements/form_footer_button.html' with text='Создать аккаунт'%}
+    </form>
+</div>
 {% endblock %}

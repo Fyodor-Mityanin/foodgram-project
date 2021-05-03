@@ -1,26 +1,4 @@
 <div class="main__header">
-    <h1 class="main__title">
-        {% if request.resolver_match.url_name == 'index' %}
-        Рецепты
-        {% elif request.resolver_match.url_name == 'author' %}
-        {{ author.get_full_name }}
-        {% elif request.resolver_match.url_name == 'favorite' %}
-        Избранное
-        {% elif request.resolver_match.url_name == 'follow' %}
-        Мои подписки
-        {% elif request.resolver_match.url_name == 'purchase' %}
-        Мои покупки
-        {% endif %}
-    </h1>
-    {% if request.resolver_match.url_name != 'follow' %}
-    <ul class="tags">
-        {% load custom_filters %}
-        {% for tag in tags %}
-        <li class="tags__item">
-            <a id="{{tag.slug}}" class="tags__checkbox tags__checkbox_style_{{tag.color}} tags__checkbox{% if tag.slug in tag_list %}_active{% endif %}" 
-            href="{{request.path}}{{tag.slug|tags_link_generator:tag_list}}"></a><span class="tags__label">{{tag.title}}</span>
-        </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    {% include 'elements/main_title.html' with text='Рецепты' %}
+    {% include 'blocks/tags.html' %}
 </div>
