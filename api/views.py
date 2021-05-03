@@ -11,7 +11,7 @@ from .serializers import (FavoriteSerializer, FollowSerializer,
 
 SUCCESS_RESPONSE = {'success': 'true'}
 API_BASENAMES = {
-    'SubscriptionsAPI': (User, 'author', ),
+    'SubscriptionsAPI': (User, 'author',),
     'FavoritesAPI': (Recipe, 'recipe',),
     'PurchasesAPI': (Recipe, 'recipe',),
 }
@@ -24,6 +24,8 @@ class CreateDestroyViewSet(viewsets.GenericViewSet,
 
 
 class CommonAPIViewSet(CreateDestroyViewSet):
+    """Общий вьюсет для всех API"""
+
     queryset = None
     serializer_class = None
 
@@ -59,16 +61,22 @@ class CommonAPIViewSet(CreateDestroyViewSet):
 
 
 class SubscriptionsViewSet(CommonAPIViewSet):
+    """Добавление и удаление подписки"""
+
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
 
 
 class FavoritesViewSet(CommonAPIViewSet):
+    """Добавление и удаление лайка"""
+
     queryset = Favorite.objects.all()
     serializer_class = FavoriteSerializer
 
 
 class PurchasesViewSet(CommonAPIViewSet):
+    """Добавление и удаление покупки"""
+
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
 

@@ -1,40 +1,22 @@
 {% extends 'base.html' %}
 {% block title %}Войти на сайт{% endblock %}
 {% load static %}
-{% load user_filters %}
+{% load custom_filters %}
 {% block headcss %}<link rel="stylesheet" href="{% static 'users/pages/form.css' %}">{% endblock %}
-{% block content %} 
-    <div class="main__header">
-        {% if next %}
-        <h1 class="main__title">Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей.<br>
-            Пожалуйста, авторизуйтесь.</h1>
-        {% else %}
-        <h1 class="main__title">Войти на сайт</h1>
-        {% endif %}
-    </div>
+{% block content %}
+    {% if next %}
+    {% include 'elements/main_header.html' with text='Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей.<br>
+    Пожалуйста, авторизуйтесь.' %}
+    {% else %}
+    {% include 'elements/main_header.html' with text='Войти на сайт' %}
+    {% endif %}
     <div class="form-container">
         <form class="form" action="{% url 'login' %}" method="POST">
             {% csrf_token %}
-            <div class="form__group" aria-required="true">
-                <label for="{{ form.username.id_for_label }}" class="form__label">{{ form.username.label }}</label>
-                <div class="form__field-group">
-                    {{ form.username|addclass:"form__input" }}
-                </div>
-            </div>
-            <div class="form__group" aria-required="true">
-                <label for="{{ form.password.id_for_label }}" class="form__label">{{ form.password.label }}</label>
-                <div class="form__field-group">
-                    {{ form.password|addclass:"form__input" }}
-                    {% if form.errors %}
-                    <span class="form__error">Имя пользователя и пароль не совпадают. Введите правильные данные.
-                    </span>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="form__footer">
-                <button class="button button_style_blue">Войти</button>
-                <a class="form__forgot-link" href="{% url 'password_reset' %}" >Забыли пароль?</a>
-            </div>
+            {% for field in form %}
+                {% include 'blocks\form_group.html' with field=field %}
+            {% endfor %}
+            {% include 'elements/form_footer_button.html' with text='Войти' with_link=True %}
         </form>
     </div>
 {% endblock %}

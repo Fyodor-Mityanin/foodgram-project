@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ recipe.title }}{% endblock %}
 {% load static %}
-{% load poll_extras %}
+{% load custom_filters %}
 {% block headcss %}<link rel="stylesheet" href="{% static 'recipes/pages/single.css' %}">{% endblock %}
 {% block content %}
     <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">

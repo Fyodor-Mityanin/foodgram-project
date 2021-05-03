@@ -2,7 +2,7 @@
     {% load static %}
     <a href="{{ recipe.get_absolute_url }}" class="link" target="_blank"></a>
     {% load thumbnail %}
-    {% load poll_extras %}
+    {% load custom_filters %}
     <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
     </a>
     <div class="card__body">

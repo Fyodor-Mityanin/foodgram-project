@@ -14,7 +14,7 @@
     </h1>
     {% if request.resolver_match.url_name != 'follow' %}
     <ul class="tags">
-        {% load poll_extras %}
+        {% load custom_filters %}
         {% for tag in tags %}
         <li class="tags__item">
             <a id="{{tag.slug}}" class="tags__checkbox tags__checkbox_style_{{tag.color}} tags__checkbox{% if tag.slug in tag_list %}_active{% endif %}" 

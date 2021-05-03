@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{% if request.resolver_match.url_name == 'new_recipe' %}Создание рецепта{% else %}Редактирование рецепта{% endif %}{% endblock %}
 {% load static %}
-{% load poll_extras %}
+{% load custom_filters %}
 {% block headcss %}<link rel="stylesheet" href="{% static 'recipes/pages/form.css' %}">{% endblock %}
 {% block content %}
 <main class="main container">
