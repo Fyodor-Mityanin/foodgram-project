@@ -18,7 +18,7 @@
         {% for field in form %}
         {% include 'blocks\form_group.html' with field=field %}
         {% endfor %}
-        {% include 'elements/form_footer_button.html' with text='Войти' with_link=True %}
+        {% include 'elements/button_style_blue_form.html' with text='Войти' with_link=True %}
     </form>
 </div>
 {% endblock %}

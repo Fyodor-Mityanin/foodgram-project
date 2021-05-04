@@ -1,4 +1,4 @@
 Ваш список покупок:
 {% for key, value in data.items %}
-{{forloop.counter}} - {{ key }} {{ value }} {{ key.dimension }}
+{{ forloop.counter }} - {{ key }} {{ value }} {{ key.dimension }}
 {% endfor %}

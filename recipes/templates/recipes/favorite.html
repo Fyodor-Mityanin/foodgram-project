@@ -2,7 +2,6 @@
 {% block title %}Избранное{% endblock %}
 {% load static %}
 {% block content %}
-{% include 'parts/nav.html' %}
 <div class="card-list">
     {% for recipe in recipe %}
     {% include "parts/recipe_card.html" with recipe=recipe %}

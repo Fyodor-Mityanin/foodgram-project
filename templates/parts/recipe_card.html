@@ -1,15 +1,15 @@
 <div class="card" data-id="{{ recipe.id }}">
     {% load static %}
-    <a href="{{ recipe.get_absolute_url }}" class="link" target="_blank"></a>
+    <a href="{{ recipe.get_absolute_url }}" class="link"></a>
     {% load thumbnail %}
     {% load custom_filters %}
     <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
     </a>
     <div class="card__body">
-        <a class="card__title link" href="{{ recipe.get_absolute_url }}" target="_blank">{{ recipe.title }}</a>
+        <a class="card__title link" href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
         <ul class="card__items">
             {% for tag in recipe.tags.all %}
-            <li class="card__item"><span class="badge badge_style_{{tag.tag.color}}">{{tag.tag.title}}</span></li>
+            <li class="card__item"><span class="badge badge_style_{{ tag.tag.color }}">{{ tag.tag.title }}</span></li>
             {% endfor %}         
         </ul>
         <div class="card__items card__items_column">

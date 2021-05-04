@@ -4,7 +4,7 @@
     <div class="form__field-group">
         {{ field|addclass:"form__input" }}
         {% if field.errors %}
-        <span class="form__error">{{field.errors}}</span>
+        <span class="form__error">{{ field.errors }}</span>
         {% endif %}
         {% if field.help_text %}
         <span class="form__input-info">{{ field.help_text|safe }}</span>

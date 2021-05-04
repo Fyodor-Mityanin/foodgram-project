@@ -2,19 +2,15 @@
 {% block title %}{% endblock %}
 {% load static %}
 {% block content %}
-    {% include 'parts/nav.html' %}
-    {% if user.is_authenticated and request.user != author %}
-    <div class="author-subscribe" data-author="{{ author.id }}">
-        {% csrf_token %}
-        <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></p>
-    </div>
-    {% endif %}
-    <div class="card-list">
-        {% for recipe in recipe %}
-            {% include "parts/recipe_card.html" with recipe=recipe %}
-        {% endfor %}
-    </div>
-    {% include 'parts/paginator.html' with page_obj=page_obj%}
+{% if user.is_authenticated and request.user != author %}
+{% include 'elements\author_subscribe_button.html'%}
+{% endif %}
+<div class="card-list">
+    {% for recipe in recipe %}
+    {% include "parts/recipe_card.html" with recipe=recipe %}
+    {% endfor %}
+</div>
+{% include 'parts/paginator.html' with page_obj=page_obj%}
 {% endblock %}
 {% block script %}
 <script src="{% static 'recipes/js/components/MainCards.js' %}"></script>

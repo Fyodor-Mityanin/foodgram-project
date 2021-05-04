@@ -1,0 +1,11 @@
+{% load static %}
+<li class="shopping-list__item" data-id="{{ recipe.id }}">
+    <div class="recipe recipe_reverse">
+        <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
+            alt="какой-то текст" class="recipe__image recipe__image_big">
+        <h3 class="recipe__title">{{ recipe.title }}</h3>
+        <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
+    </div>
+    {% csrf_token %}
+    <a href="/api/v1/purchases/{{ recipe.id }}" class="shopping-list__button link">Удалить</a>
+</li>

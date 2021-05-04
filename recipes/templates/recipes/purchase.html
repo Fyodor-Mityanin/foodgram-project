@@ -1,29 +1,17 @@
-
 {% extends 'base.html' %}
 {% block title %}Список покупок{% endblock %}
 {% load static %}
 {% block headcss %}
 <link rel="stylesheet" href="{% static 'recipes/pages/shopList.css' %}">{% endblock %}
 {% block content %}
-<div class="main__header">
-    <h1 class="main__title">Список покупок</h1>
-</div>
 <div class="card-list card-list_column">
     <ul class="shopping-list">
         {% for recipe in recipe %}
-        <li class="shopping-list__item" data-id="{{ recipe.id }}">
-            <div class="recipe recipe_reverse">
-                <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="какой-то текст" class="recipe__image recipe__image_big">
-                <h3 class="recipe__title">{{ recipe.title }}</h3>
-                <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
-            </div>
-            {% csrf_token %}
-            <a href="/api/v1/purchases/{{recipe.id}}" class="shopping-list__button link">Удалить</a>
-        </li>
+        {% include 'parts\shopping_list_item.html' %}
         {% endfor %}
-
     </ul>
-    <a href="{% url 'purchase_download'%}"><button class="button button_style_blue">Скачать список</button></a>
+    {% url 'purchase_download' as purchase_download_url %}
+    {% include 'elements\button_style_blue_link.html' with text='Скачать список' url=purchase_download_url %}
 </div>
 {% include 'parts/paginator.html' with page_obj=page_obj%}
 {% endblock %}
