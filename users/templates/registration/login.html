@@ -16,9 +16,10 @@
     <form class="form" action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         {% for field in form %}
-        {% include 'blocks\form_group.html' with field=field %}
+        {% include 'blocks\form_group.html' with field=field css='form__input' %}
         {% endfor %}
-        {% include 'elements/button_style_blue_form.html' with text='Войти' with_link=True %}
+        {% url 'password_reset' as password_reset_url %}
+        {% include 'elements/button_style_blue_form.html' with text='Войти' url=password_reset_url url_text='Забыли пароль?' %}
     </form>
 </div>
 {% endblock %}

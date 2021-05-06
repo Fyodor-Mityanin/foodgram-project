@@ -1,0 +1,45 @@
+<div class="single-card__info">
+    <div class="single-card__header-info">
+        {% include 'elements\single_card_title.html' %}
+        <div class="single-card__favorite">                    
+            {% if user.is_authenticated %}
+            {% include 'blocks\icon_favorite_big.html' %}
+            {% endif %}
+        </div>
+    </div>
+    <ul class="single-card__items">
+        {% for tag in recipe.tags.all %}
+        {% include 'elements\tag_badge.html' %}
+        {% endfor %}  
+    </ul>
+    <div class="single-card__items single-card__items_column">
+        {% include 'elements\icon_time.html' %}
+        <ul class="single-card__items">
+            {% include 'elements\icon_user.html' %}
+            {% if user.is_authenticated and user == recipe.author %}
+            {% url 'recipe_edit' recipe.slug as recipe_edit_url %}
+            {% include 'elements\single_card_link.html' with text='Редактировать рецепт' url=recipe_edit_url %}
+            {% endif %}
+        </ul>
+    </div>
+    <ul class="single-card__items">
+        {% if user.is_authenticated %}
+            {% include 'elements\button_purchase.html' %}
+            {% if request.user != recipe.author %}
+            {% include 'elements\button_subscribe.html' %}
+            {% endif %}
+        {% endif %}
+    </ul>
+    <div class="single-card__section">
+        {% include 'elements\single_card_section_title.html' with text='Ингридиенты:' %}
+        <div class="single-card__items single-card__items_column">
+            {% for ingredient in recipe.ingredients.all %}
+            {% include 'elements\single_card_section_item.html' %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="single-card__section">
+        {% include 'elements\single_card_section_title.html' with text='Описание:' %}
+        {% include 'elements\single_card_section_text.html' %}
+    </div>
+</div>

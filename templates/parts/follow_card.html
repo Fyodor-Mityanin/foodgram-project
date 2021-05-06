@@ -1,6 +1,6 @@
 <div class="card-user" data-author="{{ author.id }}">
     <div class="card-user__header">
-        <a class="card-user__title" href="{% url 'author' author.username %}"> {{ author.get_full_name }} </a>
+        <a class="card-user__title link" href="{% url 'author' author.username %}"> {{ author.get_full_name }} </a>
     </div>
     <div class="card-user__body">
         <ul class="card-user__items">
@@ -9,7 +9,7 @@
                 <div class="recipe">
                     <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% load static %} {% static 'recipes/nophoto.png' %} {% endif %}"
                         alt="какой-то-текст" class="recipe__image">
-                    <a class="recipe__title" href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
+                    <a class="recipe__title link" href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
                     <p class="recipe__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
                 </div>
             </li>

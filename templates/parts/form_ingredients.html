@@ -1,0 +1,26 @@
+<div class="form__group">
+    <label for="nameIngredient" class="form__label">Ингредиенты</label>
+    <div class="form__field-group">
+        <div class="form__field-group-ingredientes">
+            <div class="form__dropdown">
+                <input type="text" id="nameIngredient" class="form__input">
+                <div class="form__dropdown-items"></div>
+            </div>
+            <input type="number" id="cantidad" class="form__input" min="0">
+            <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
+        </div>
+        <div class="form__field-group-ingredientes-container">
+            {% for ingredient in recipe.ingredients.all %}
+            <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
+                <span> {{ ingredient.ingredient }} {{ ingredient.quantity }} {{ ingredient.ingredient.dimension }}</span>
+                <span class="form__field-item-delete"></span>
+                <input id="nameIngredient_{{ forloop.counter }}" name="nameIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient }}">
+                <input id="valueIngredient_{{ forloop.counter }}" name="valueIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.quantity }}">
+                <input id="unitsIngredient_{{ forloop.counter }}" name="unitsIngredient_{{ forloop.counter }}" type="hidden" value="{{ ingredient.ingredient.dimension }}">
+            </div>
+            {% endfor %}
+        </div>
+        <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
+        <span class="form__error"></span>
+    </div>
+</div>

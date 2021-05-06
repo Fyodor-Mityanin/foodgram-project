@@ -1,7 +1,6 @@
 <div class="card" data-id="{{ recipe.id }}">
     {% load static %}
     <a href="{{ recipe.get_absolute_url }}" class="link"></a>
-    {% load thumbnail %}
     {% load custom_filters %}
     <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
     </a>

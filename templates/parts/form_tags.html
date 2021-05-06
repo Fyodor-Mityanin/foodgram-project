@@ -1,0 +1,11 @@
+<div class="form__group">
+    <p class="form__label">{{ form.tags_in_recipe.label }}</p>
+    <div class="form__field-group">
+        <div class="tags">
+            {% for tag in form.tags_in_recipe %}
+                {% include 'blocks\tags_form.html' %}
+            {% endfor %}
+        </div>
+        <span class="form__error"></span>
+    </div>
+</div>
