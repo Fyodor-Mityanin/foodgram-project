@@ -1,8 +1,26 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from users.models import User
 
-User = get_user_model()
+from django.core.validators import MinValueValidator
+
+
+class RecipeQuerySet(models.QuerySet):
+    def all_with_flags(self, user):
+        if user.is_anonymous:
+            return self
+        favorite = Favorite.objects.filter(
+            recipe=models.OuterRef('pk'),
+            user=user
+        )
+        purchase = Purchase.objects.filter(
+            recipe=models.OuterRef('pk'),
+            user=user
+        )
+        return self.annotate(
+            is_favorite=models.Exists(favorite),
+            is_purchase=models.Exists(purchase),
+        )
 
 
 class Tag(models.Model):
@@ -23,6 +41,10 @@ class Tag(models.Model):
         blank=True
     )
 
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
     def __str__(self):
         return self.title
 
@@ -37,6 +59,10 @@ class Ingredient(models.Model):
         'Единицы измерения',
         max_length=15,
     )
+
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.title
@@ -71,7 +97,6 @@ class Recipe(models.Model):
     tags_in_recipe = models.ManyToManyField(
         Tag,
         through='TagsInRecipe',
-        blank=True,
         verbose_name='Тэги'
     )
     slug = models.SlugField(
@@ -82,11 +107,19 @@ class Recipe(models.Model):
     )
     time_to_cook = models.PositiveSmallIntegerField(
         'Время приготовления',
+        validators=[MinValueValidator(1)],
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
         auto_now_add=True,
     )
+
+    objects = RecipeQuerySet.as_manager()
+
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.title
@@ -94,8 +127,14 @@ class Recipe(models.Model):
     def get_absolute_url(self):
         return reverse('recipe', kwargs={'slug': self.slug})
 
-    class Meta:
-        ordering = ['-pub_date']
+    def short_description(self):
+        return self.description[:150]
+
+    def num_in_favorite(self):
+        return self.likers.count()
+
+    short_description.short_description = 'Описание'
+    num_in_favorite.short_description = 'Кол-во лайков'
 
 
 class IngredientsInRecipe(models.Model):
@@ -113,8 +152,13 @@ class IngredientsInRecipe(models.Model):
     )
     quantity = models.PositiveSmallIntegerField(
         'Количество',
-        help_text='Сколько класть?'
+        help_text='Сколько класть?',
+        validators=[MinValueValidator(1)],
     )
+
+    class Meta:
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецепте'
 
     def __str__(self):
         recipe = self.recipe
@@ -139,6 +183,8 @@ class TagsInRecipe(models.Model):
 
     class Meta:
         unique_together = ['recipe', 'tag']
+        verbose_name = 'Тэг рецепта'
+        verbose_name_plural = 'Тэги рецепта'
 
     def __str__(self):
         recipe = self.recipe
@@ -161,7 +207,15 @@ class Follow(models.Model):
     )
 
     class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="prevent_self_follow",
+                check=~models.Q(user=models.F("author")),
+            ),
+        ]
         unique_together = ['user', 'author']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
 
 
 class Favorite(models.Model):
@@ -180,6 +234,8 @@ class Favorite(models.Model):
 
     class Meta:
         unique_together = ['user', 'recipe']
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
 
 
 class Purchase(models.Model):
@@ -198,3 +254,5 @@ class Purchase(models.Model):
 
     class Meta:
         unique_together = ['user', 'recipe']
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'

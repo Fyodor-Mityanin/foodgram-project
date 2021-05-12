@@ -15,7 +15,11 @@
 <body class="body">
     {% include 'parts/menu.html' %}
     <main class="main container">
-        {% include 'parts/nav.html' %}
+        {% with request.resolver_match.url_name as current_url %}
+        {% if current_url == 'index' or current_url == 'favorite' or current_url == 'author' %}
+            {% include 'parts/nav.html' %}
+        {% endif %}
+        {% endwith %}
         {% block content %}
         {% endblock %}
     </main>

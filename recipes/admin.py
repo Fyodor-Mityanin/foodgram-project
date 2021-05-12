@@ -4,19 +4,27 @@ from .models import (Favorite, Follow, Ingredient, IngredientsInRecipe,
                      Purchase, Recipe, Tag, TagsInRecipe)
 
 
+class IngredientsInline(admin.TabularInline):
+    model = IngredientsInRecipe
+    min_num = 1
+
+
 class RecipeAdmin(admin.ModelAdmin):
     """Админка для рецептов"""
     list_display = (
-        'pk',
-        'author',
         'title',
-        'description',
+        'author',
+        'short_description',
         'slug',
         'time_to_cook',
+        'num_in_favorite',
     )
     search_fields = ('description',)
     list_filter = ('title',)
     empty_value_display = '-пусто-'
+    inlines = [
+        IngredientsInline,
+    ]
 
 
 class IngredientAdmin(admin.ModelAdmin):

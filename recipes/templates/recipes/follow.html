@@ -4,7 +4,7 @@
 {% block headcss %}<link rel="stylesheet" href="{% static 'recipes/pages/myFollow.css' %}">{% endblock %}
 {% block content %}
 <div class="card-list">
-    {% for author in author %}
+    {% for author in authors %}
         {% include "parts/follow_card.html" with recipes=author.recipes.all %}
     {% endfor %}
 </div>

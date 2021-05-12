@@ -59,7 +59,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'recipes.context_processors.request'
+                'recipes.context_processors.tags'
             ],
         },
     },
@@ -126,3 +126,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
 }
+
+RECIPES_PAGINATE_BY = 6
+FOLLOWS_PAGINATE_BY = 3

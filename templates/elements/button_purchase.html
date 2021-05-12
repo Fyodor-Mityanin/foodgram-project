@@ -1,5 +1,5 @@
 {% load custom_filters %}
-{% if recipe|is_purchase:request.user %}
+{% if recipe.is_purchase %}
 <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check"></span>Рецепт добавлен</button></li>
 {% else %}
 <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>

@@ -1,5 +1,5 @@
 {% load custom_filters %}
-{% if recipe|is_favorite:request.user %}
+{% if recipe.is_favorite %}
 <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_big icon-favorite_active"></span></button>
 <div class="single-card__favorite-tooltip tooltip">Убрать из избранного</div>
 {% else %}
