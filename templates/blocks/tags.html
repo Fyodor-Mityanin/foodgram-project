@@ -3,8 +3,8 @@
     {% for tag in tags %}
     <li class="tags__item">
         <a id="{{ tag.slug }}"
-            class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox{% if tag.slug in tag_list %}_active{% endif %}"
-            href="{{ request.path }}{{ tag.slug|tags_link_generator:tag_list }}">
+            class="tags__checkbox tags__checkbox_style_{{ tag.color }} tags__checkbox{% if tag.is_active %}_active{% endif %}"
+            href="{{ request.path }}{{ tag.url }}">
         </a>
         <span class="tags__label">{{ tag.title }}</span>
     </li>

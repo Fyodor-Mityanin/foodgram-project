@@ -66,6 +66,7 @@ class RecipeForm(models.ModelForm):
                 )
             )
         self.instance.save()
+        IngredientsInRecipe.objects.filter(recipe=self.instance).delete()
         objs = [
             IngredientsInRecipe(
                 recipe=self.instance,

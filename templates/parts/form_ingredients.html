@@ -11,6 +11,7 @@
         </div>
         <div class="form__field-group-ingredientes-container">
             {% for ingredient in recipe.ingredients.all %}
+            <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
             <div class="form__field-item-ingredient" id="ing_{{ forloop.counter }}">
                 <span> {{ ingredient.ingredient }} {{ ingredient.quantity }} {{ ingredient.ingredient.dimension }}</span>
                 <span class="form__field-item-delete"></span>
@@ -20,7 +21,6 @@
             </div>
             {% endfor %}
         </div>
-        <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
         <span class="form__error">{{ field.errors }}</span>
     </div>
 </div>

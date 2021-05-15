@@ -1,51 +1,29 @@
 from django.db.models import Subquery, Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.core import paginator
 from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
 from django.template import loader
 from django.views.generic import DetailView, ListView
 from pytils.translit import slugify
 from foodgram.settings import RECIPES_PAGINATE_BY, FOLLOWS_PAGINATE_BY
 
-# from .paginator import SafePaginator
 from .forms import RecipeForm
-from .models import (Favorite, Follow, Ingredient, IngredientsInRecipe,
-                     Purchase, Recipe)
+from .models import Favorite, Follow, IngredientsInRecipe, Purchase, Recipe
 from users.models import User
-
-
-def get_tags(obj, context):
-    # context['tags'] = Tag.objects.all()
-    if not obj.tag_list:
-        context['tag_list'] = ['breakfast', 'lunch', 'dinner']
-        return context
-    context['tag_list'] = obj.tag_list
-    return context
 
 
 class Index(ListView):
     """Список всех рецептов."""
     model = Recipe
-    # paginator_class = SafePaginator
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/index.html'
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        self.tag_list = self.request.GET.getlist('tag')
-        if not self.tag_list:
-            return Recipe.objects.all_with_flags(self.request.user)
+        tag_list = self.request.GET.getlist('tag')
         return Recipe.objects.all_with_flags(
-            self.request.user
-        ).filter(
-            tags_in_recipe__slug__in=self.tag_list
+            self.request.user, tag_list
         ).distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        get_tags(self, context)
-        return context
 
 
 class AuthorList(ListView):
@@ -56,15 +34,11 @@ class AuthorList(ListView):
 
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
-        self.tag_list = self.request.GET.getlist('tag')
-        if not self.tag_list:
-            return Recipe.objects.all_with_flags(
-                self.request.user
-            ).filter(author=self.author)
+        tag_list = self.request.GET.getlist('tag')
         return Recipe.objects.all_with_flags(
-            self.request.user
+            self.request.user, tag_list
         ).filter(
-            author=self.author, tags_in_recipe__slug__in=self.tag_list
+            author=self.author
         ).distinct()
 
     def get_context_data(self, **kwargs):
@@ -76,7 +50,6 @@ class AuthorList(ListView):
             follow = False
         context['author'] = self.author
         context['follow'] = follow
-        get_tags(self, context)
         return context
 
 
@@ -87,26 +60,14 @@ class FavoriteList(LoginRequiredMixin, ListView):
     context_object_name = 'recipe'
 
     def get_queryset(self):
-        self.tag_list = self.request.GET.getlist('tag')
+        tag_list = self.request.GET.getlist('tag')
         favorites = Favorite.objects.select_related(
             'recipe').filter(user=self.request.user)
-        recipe_list = []
-        for i in favorites:
-            recipe_list.append(i.recipe.id)
-        if not self.tag_list:
-            return Recipe.objects.all_with_flags(
-                self.request.user
-            ).filter(pk__in=recipe_list)
         return Recipe.objects.all_with_flags(
-            self.request.user
+            self.request.user, tag_list
         ).filter(
-            pk__in=recipe_list, tags_in_recipe__slug__in=self.tag_list
+            pk__in=Subquery(favorites.values('recipe'))
         ).distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        get_tags(self, context)
-        return context
 
 
 class RecipeDetail(DetailView):
@@ -115,8 +76,13 @@ class RecipeDetail(DetailView):
     template_name = 'recipes/recipe_detail.html'
     context_object_name = 'recipe'
 
-    def get_queryset(self):
-        return Recipe.objects.all_with_flags(self.request.user)
+    def get_object(self):
+        recipe = Recipe.objects.all_with_flags(
+            self.request.user
+        ).get(
+            slug=self.kwargs['slug']
+        )
+        return recipe
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -171,7 +137,7 @@ def PurchaseListDownload(request):
     return response
 
 
-@login_required
+@ login_required
 def new_recipe(request):
     """Создание рецепта"""
     form = RecipeForm(request.POST or None, files=request.FILES or None,)
@@ -189,7 +155,7 @@ def new_recipe(request):
     )
 
 
-@login_required
+@ login_required
 def recipe_edit(request, slug):
     """Редактирование рецепта"""
     recipe = get_object_or_404(Recipe, slug=slug)
@@ -200,36 +166,8 @@ def recipe_edit(request, slug):
         files=request.FILES or None,
         instance=recipe,
     )
-
-    if request.method == 'POST':
-        ingredients_ids = []
-        for key in form.data:
-            if 'Ingredient' in key:
-                _, id = key.split('_')
-                if id not in ingredients_ids:
-                    ingredients_ids.append(id)
-        ingredient_list = []
-        for i in ingredients_ids:
-            nameIngredient = 'nameIngredient_' + i
-            valueIngredient = 'valueIngredient_' + i
-            unitsIngredient = 'unitsIngredient_' + i
-            ingredient_list.append(
-                (form.data[nameIngredient], form.data[valueIngredient], form.data[unitsIngredient],))
-    if form.is_valid() and ingredient_list:
+    if form.is_valid():
         form.save()
-        ingridients_in_current_recipe = recipe.ingredients.all()
-        list_for_delete = []
-        for ingredient in ingridients_in_current_recipe:
-            current_ing = (ingredient.ingredient.title, str(
-                ingredient.quantity), ingredient.ingredient.dimension)
-            if current_ing not in ingredient_list:
-                list_for_delete.append(ingredient.id)
-        IngredientsInRecipe.objects.filter(id__in=list_for_delete).delete()
-        for ingredient in ingredient_list:
-            object, created = IngredientsInRecipe.objects.get_or_create(
-                recipe=form.instance, ingredient=Ingredient.objects.get(title=ingredient[0]), quantity=ingredient[1])
-            if created:
-                object.save()
         return redirect(form.instance)
     return render(
         request,
@@ -239,7 +177,7 @@ def recipe_edit(request, slug):
     )
 
 
-@login_required
+@ login_required
 def recipe_delete(request, slug):
     """Удаление рецепта"""
     recipe = get_object_or_404(Recipe, slug=slug)

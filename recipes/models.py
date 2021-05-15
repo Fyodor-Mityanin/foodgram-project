@@ -6,7 +6,7 @@ from django.core.validators import MinValueValidator
 
 
 class RecipeQuerySet(models.QuerySet):
-    def all_with_flags(self, user):
+    def all_with_flags(self, user, tag_list=None):
         if user.is_anonymous:
             return self
         favorite = Favorite.objects.filter(
@@ -17,10 +17,17 @@ class RecipeQuerySet(models.QuerySet):
             recipe=models.OuterRef('pk'),
             user=user
         )
-        return self.annotate(
+        if not tag_list:
+            return self.annotate(
+                is_favorite=models.Exists(favorite),
+                is_purchase=models.Exists(purchase),
+            )
+        return self.filter(
+            tags_in_recipe__slug__in=tag_list
+        ).annotate(
             is_favorite=models.Exists(favorite),
             is_purchase=models.Exists(purchase),
-        )
+        ).distinct()
 
 
 class Tag(models.Model):
@@ -97,7 +104,7 @@ class Recipe(models.Model):
     tags_in_recipe = models.ManyToManyField(
         Tag,
         through='TagsInRecipe',
-        verbose_name='Тэги'
+        verbose_name='Тэги',
     )
     slug = models.SlugField(
         'Краткое название рецепта (англ.)',
@@ -159,6 +166,7 @@ class IngredientsInRecipe(models.Model):
     class Meta:
         verbose_name = 'Ингредиент в рецепте'
         verbose_name_plural = 'Ингредиенты в рецепте'
+        unique_together = ['recipe', 'ingredient']
 
     def __str__(self):
         recipe = self.recipe

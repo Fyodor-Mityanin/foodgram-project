@@ -9,6 +9,12 @@ class IngredientsInline(admin.TabularInline):
     min_num = 1
 
 
+class TagsInline(admin.TabularInline):
+    model = TagsInRecipe
+    min_num = 1
+    extra = 2
+
+
 class RecipeAdmin(admin.ModelAdmin):
     """Админка для рецептов"""
     list_display = (
@@ -24,6 +30,7 @@ class RecipeAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
     inlines = [
         IngredientsInline,
+        TagsInline,
     ]
 
 

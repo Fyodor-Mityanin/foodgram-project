@@ -1,20 +1,6 @@
 from django import template
 
-from ..models import Favorite, Purchase
-
 register = template.Library()
-
-
-@register.filter
-def is_favorite(recipe, user):
-    favorite = Favorite.objects.filter(user=user, recipe=recipe).exists()
-    return favorite
-
-
-@register.filter
-def is_purchase(recipe, user):
-    purchase = Purchase.objects.filter(user=user, recipe=recipe).exists()
-    return purchase
 
 
 @register.filter
@@ -59,3 +45,11 @@ def ru_pluralize(value, arg):
         return args[1]
     else:
         return args[2]
+
+
+@register.simple_tag(takes_context=True)
+def query_transform(context, **kwargs):
+    query = context['request'].GET.copy()
+    for k, v in kwargs.items():
+        query[k] = v
+    return query.urlencode()
