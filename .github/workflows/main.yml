@@ -22,10 +22,7 @@ jobs:
 
     - name: Lint with flake8
       run: flake8 . --max-line-length 119 --exclude venv_foodgram,migrations
-
-    - name: Test with pytest
-      run: pytest
-  
+ 
   build_and_push_to_docker_hub:
     if: github.ref == 'refs/heads/master'
     name: Push Docker image to Docker Hub
