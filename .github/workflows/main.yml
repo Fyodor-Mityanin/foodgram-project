@@ -48,7 +48,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: fedormityanin/foodgram_project:latest
+          tags: fedormityanin/foodgram-project:latest
 
   deploy:
     if: github.ref == 'refs/heads/master'
@@ -78,7 +78,7 @@ jobs:
           script: |
             sudo docker-compose stop
             sudo docker stop $(sudo docker ps -a -q) && sudo docker rm $(sudo docker ps -a -q) && sudo docker rmi $(sudo docker images -q)
-            sudo docker pull fedormityanin/foodgram_project:latest
+            sudo docker pull fedormityanin/foodgram-project:latest
             sudo docker-compose up -d
 
   send_message:
