@@ -77,9 +77,6 @@ jobs:
             sudo docker stop $(sudo docker ps -a -q) && sudo docker rm $(sudo docker ps -a -q) && sudo docker rmi $(sudo docker images -q)
             sudo docker pull fedormityanin/foodgram-project:latest
             sudo docker-compose up -d
-            sudo docker-compose exec web python manage.py makemigrations --noinput
-            sudo docker-compose exec web python manage.py migrate --noinput
-            sudo docker-compose exec web python manage.py collectstatic --no-input
 
   send_message:
     runs-on: ubuntu-latest
