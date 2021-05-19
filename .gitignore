@@ -8,6 +8,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.comands
 venv_foodgram/
 .Python
 build/
