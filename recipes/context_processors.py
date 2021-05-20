@@ -1,5 +1,6 @@
+from django.db.models import BooleanField, Case, Value, When
+
 from .models import Tag
-from django.db.models import Value, BooleanField, Case, When
 
 
 def tags_link_generator(tag, tag_list):

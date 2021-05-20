@@ -1,7 +1,7 @@
-from django.forms import (CheckboxSelectMultiple, ModelMultipleChoiceField,
-                          models, ValidationError, JSONField)
+from django.forms import (CheckboxSelectMultiple, JSONField,
+                          ModelMultipleChoiceField, ValidationError, models)
 
-from recipes.models import Recipe, Tag, Ingredient, IngredientsInRecipe
+from recipes.models import Ingredient, IngredientsInRecipe, Recipe, Tag
 
 
 class RecipeForm(models.ModelForm):

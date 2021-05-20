@@ -1,15 +1,16 @@
-from django.db.models import Subquery, Sum
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Subquery, Sum
 from django.shortcuts import HttpResponse, get_object_or_404, redirect, render
 from django.template import loader
 from django.views.generic import DetailView, ListView
 from pytils.translit import slugify
-from foodgram.settings import RECIPES_PAGINATE_BY, FOLLOWS_PAGINATE_BY
+
+from foodgram.settings import FOLLOWS_PAGINATE_BY, RECIPES_PAGINATE_BY
+from users.models import User
 
 from .forms import RecipeForm
 from .models import Favorite, Follow, IngredientsInRecipe, Purchase, Recipe
-from users.models import User
 
 
 class Index(ListView):
