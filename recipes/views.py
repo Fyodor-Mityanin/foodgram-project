@@ -10,7 +10,7 @@ from foodgram.settings import FOLLOWS_PAGINATE_BY, RECIPES_PAGINATE_BY
 from users.models import User
 
 from .forms import RecipeForm
-from .models import Favorite, Follow, IngredientsInRecipe, Purchase, Recipe
+from .models import IngredientsInRecipe, Recipe
 
 
 class Index(ListView):
@@ -45,8 +45,9 @@ class AuthorList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            follow = Follow.objects.filter(
-                user=self.request.user, author=self.author).exists()
+            follow = self.request.user.authors.filter(
+                author=self.author
+            ).exists()
         except TypeError:
             follow = False
         context['author'] = self.author
@@ -62,8 +63,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         tag_list = self.request.GET.getlist('tag')
-        favorites = Favorite.objects.select_related(
-            'recipe').filter(user=self.request.user)
+        favorites = self.request.user.favorites.all()
         return Recipe.objects.all_with_flags(
             self.request.user, tag_list
         ).filter(
@@ -89,8 +89,9 @@ class RecipeDetail(DetailView):
         context = super().get_context_data(**kwargs)
         recipe = context['recipe']
         try:
-            follow = Follow.objects.filter(
-                user=self.request.user, author=recipe.author).exists()
+            follow = self.request.user.authors.filter(
+                author=recipe.author
+            ).exists()
         except TypeError:
             follow = False
         context['follow'] = follow
@@ -104,11 +105,7 @@ class FollowList(LoginRequiredMixin, ListView):
     context_object_name = 'authors'
 
     def get_queryset(self):
-        follows = Follow.objects.select_related(
-            'author'
-        ).filter(
-            user=self.request.user
-        )
+        follows = self.request.user.authors.all()
         return User.objects.filter(pk__in=Subquery(follows.values('author')))
 
 
@@ -118,13 +115,13 @@ class PurchaseList(LoginRequiredMixin, ListView):
     context_object_name = 'purchase'
 
     def get_queryset(self):
-        return Purchase.objects.filter(user=self.request.user)
+        return self.request.user.purchases.all()
 
 
 def PurchaseListDownload(request):
     response = HttpResponse(content_type='text/txt')
     response['Content-Disposition'] = 'attachment; filename="purchase_list.txt"'
-    purchase_list = Purchase.objects.filter(user=request.user)
+    purchase_list = request.user.purchases.all()
     ingredients_list = IngredientsInRecipe.objects.filter(
         recipe__in=Subquery(purchase_list.values('recipe'))
     ).values(
