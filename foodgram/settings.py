@@ -127,6 +127,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'SEARCH_PARAM': 'query',
 }
 
 RECIPES_PAGINATE_BY = 6

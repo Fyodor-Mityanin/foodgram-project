@@ -24,9 +24,10 @@ class RecipeAdmin(admin.ModelAdmin):
         'slug',
         'time_to_cook',
         'num_in_favorite',
+        'list_of_tags',
     )
     search_fields = ('description',)
-    list_filter = ('title',)
+    list_filter = ('tags_in_recipe', 'pub_date',)
     empty_value_display = '-пусто-'
     inlines = [
         IngredientsInline,

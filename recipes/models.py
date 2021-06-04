@@ -140,8 +140,13 @@ class Recipe(models.Model):
     def num_in_favorite(self):
         return self.likers.count()
 
+    def list_of_tags(self):
+        tag_list = [tag.tag for tag in self.tags.all()]
+        return tag_list
+
     short_description.short_description = 'Описание'
     num_in_favorite.short_description = 'Кол-во лайков'
+    list_of_tags.short_description = 'Тэги'
 
 
 class IngredientsInRecipe(models.Model):

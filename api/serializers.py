@@ -4,6 +4,18 @@ from recipes.models import Favorite, Follow, Ingredient, Purchase, Recipe, User
 
 
 class FollowSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        user = self.context['request'].user
+        author = data['author']
+        if user == author:
+            raise serializers.ValidationError('You cant follow yourself')
+        if Follow.objects.filter(user=user, author=author).exists():
+            raise serializers.ValidationError(
+                'This subscribe is already exist'
+            )
+        return data
+
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -14,7 +26,7 @@ class FollowSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('user', 'author',)
         model = Follow
         validators = [
             serializers.UniqueTogetherValidator(
@@ -26,6 +38,16 @@ class FollowSerializer(serializers.ModelSerializer):
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        if Favorite.objects.filter(
+            user=self.context['request'].user,
+            recipe=data['recipe'],
+        ).exists():
+            raise serializers.ValidationError(
+                'This Favorite is already exist'
+            )
+        return data
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -36,11 +58,21 @@ class FavoriteSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('user', 'recipe',)
         model = Favorite
 
 
 class PurchaseSerializer(serializers.ModelSerializer):
+
+    def validate(self, data):
+        if Purchase.objects.filter(
+            user=self.context['request'].user,
+            recipe=data['recipe'],
+        ).exists():
+            raise serializers.ValidationError(
+                'This Purchase is already exist'
+            )
+        return data
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -51,7 +83,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        fields = ('user', 'recipe',)
         model = Purchase
 
 
