@@ -10,7 +10,7 @@ from foodgram.settings import FOLLOWS_PAGINATE_BY, RECIPES_PAGINATE_BY
 from users.models import User
 
 from .forms import RecipeForm
-from .models import IngredientsInRecipe, Recipe
+from .models import IngredientsInRecipe, Purchase, Recipe
 
 
 class Index(ListView):
@@ -48,7 +48,7 @@ class AuthorList(ListView):
             follow = self.request.user.authors.filter(
                 author=self.author
             ).exists()
-        except TypeError:
+        except AttributeError:
             follow = False
         context['author'] = self.author
         context['follow'] = follow
@@ -92,7 +92,7 @@ class RecipeDetail(DetailView):
             follow = self.request.user.authors.filter(
                 author=recipe.author
             ).exists()
-        except TypeError:
+        except AttributeError:
             follow = False
         context['follow'] = follow
         return context
@@ -183,6 +183,18 @@ def recipe_delete(request, slug):
         return redirect(recipe.get_absolute_url())
     recipe.delete()
     return redirect('/')
+
+
+@ login_required
+def purchase_delete(request, slug):
+    """Удаление покупки"""
+    purchase = get_object_or_404(
+        Purchase,
+        user=request.user,
+        recipe__slug=slug,
+    )
+    purchase.delete()
+    return redirect('purchase')
 
 
 def page_not_found(request, exception):

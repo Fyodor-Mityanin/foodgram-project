@@ -13,4 +13,5 @@ urlpatterns = [
     path('follow/', views.FollowList.as_view(), name='follow'),
     path('purchase/', views.PurchaseList.as_view(), name='purchase'),
     path('purchase/download', views.PurchaseListDownload, name='purchase_download'),
+    path('purchase/<slug:slug>/delete/', views.purchase_delete, name='purchase_delete'),
 ]

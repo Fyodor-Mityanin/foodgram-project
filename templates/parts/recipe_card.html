@@ -1,36 +1,5 @@
 <div class="card" data-id="{{ recipe.id }}">
-    {% load static %}
-    <a href="{{ recipe.get_absolute_url }}" class="link"></a>
-    {% load custom_filters %}
-    <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
-    </a>
-    <div class="card__body">
-        <a class="card__title link" href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
-        <ul class="card__items">
-            {% for tag in recipe.tags.all %}
-            <li class="card__item"><span class="badge badge_style_{{ tag.tag.color }}">{{ tag.tag.title }}</span></li>
-            {% endfor %}         
-        </ul>
-        <div class="card__items card__items_column">
-            <p class="card__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
-            <p class="card__text"><span class="icon-user"></span> <a href="{% url 'author' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a></p>
-        </div>
-    </div>
-    <div class="card__footer">
-        {% csrf_token %}
-        {% if user.is_authenticated %}
-            {% if recipe.is_purchase %}
-            <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
-            {% else %}
-            <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
-            {% endif %}
-        {% endif %}
-        {% if user.is_authenticated %}
-            {% if recipe.is_favorite %}
-            <button class="button button_style_none" name="favorites"><span class="icon-favorite icon-favorite_active"></span></button>
-            {% else %}
-            <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
-            {% endif %}
-        {% endif %}
-    </div>
+    {% include "elements/card_image.html" %}
+    {% include "blocks/card_body.html" %}
+    {% include "blocks/card_footer.html" %}
 </div>

@@ -1,1 +1,15 @@
-<li class="single-card__item"><p class="single-card__text"><span class="icon-user"></span>{{ recipe.author.get_full_name }}</p></li>
+{% with request.resolver_match.url_name as current_url %}
+{% if current_url == 'recipe' %}
+<li class="single-card__item">
+    <p class="single-card__text">
+        <span class="icon-user"></span>
+        <a href="{% url 'author' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a>
+    </p>
+</li>
+{% else %}
+<p class="card__text">
+    <span class="icon-user"></span>
+    <a href="{% url 'author' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a>
+</p>
+{% endif %}
+{% endwith %}

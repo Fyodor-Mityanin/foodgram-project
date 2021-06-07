@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 {% if user.is_authenticated and request.user != author %}
-{% include 'elements/author_subscribe_button.html'%}
+{% include 'elements/button_subscribe.html'%}
 {% endif %}
 <div class="card-list">
     {% for recipe in recipe %}

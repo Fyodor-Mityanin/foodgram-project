@@ -1,0 +1,7 @@
+<div class="card__footer">
+    {% csrf_token %}
+    {% if user.is_authenticated %}
+        {% include 'elements/button_purchase.html' %}
+        {% include 'elements/button_favorite.html' %}
+    {% endif %}
+</div>

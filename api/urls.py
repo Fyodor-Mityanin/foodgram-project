@@ -24,5 +24,5 @@ v1_router.register(
 
 urlpatterns = [
     path('v1/', include(v1_router.urls)),
-    path('v1/ingredients', views.IngredientsSearch.as_view(), name='remove_favorite'),
+    path('v1/ingredients', views.IngredientsSearch.as_view(), name='ingredient_search'),
 ]

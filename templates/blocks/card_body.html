@@ -1,0 +1,12 @@
+<div class="card__body">
+    {% include "elements/card_title.html" %}
+    <ul class="card__items">
+        {% for tag in recipe.tags.all %}
+        {% include "elements/single_card_tag.html" %}
+        {% endfor %}         
+    </ul>
+    <div class="card__items card__items_column">
+        {% include "elements/icon_time.html" %}
+        {% include "elements/icon_user.html" %}
+    </div>
+</div>

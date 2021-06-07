@@ -9,7 +9,7 @@ def tags_link_generator(tag, tag_list):
     if tag in tmp_tag_list:
         tmp_tag_list.remove(tag)
         if not tmp_tag_list:
-            return '?tag=None'
+            return ''
         for i in tmp_tag_list:
             link += f'tag={i}&'
         return link[:-1]

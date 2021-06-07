@@ -7,8 +7,11 @@ from users.models import User
 
 class RecipeQuerySet(models.QuerySet):
     def all_with_flags(self, user, tag_list=None):
+        qs = self
+        if tag_list:
+            qs = self.filter(tags_in_recipe__slug__in=tag_list)
         if user.is_anonymous:
-            return self
+            return qs
         favorite = Favorite.objects.filter(
             recipe=models.OuterRef('pk'),
             user=user
@@ -17,9 +20,6 @@ class RecipeQuerySet(models.QuerySet):
             recipe=models.OuterRef('pk'),
             user=user
         )
-        qs = self
-        if tag_list:
-            qs = self.filter(tags_in_recipe__slug__in=tag_list)
         return qs.annotate(
             is_favorite=models.Exists(favorite),
             is_purchase=models.Exists(purchase),

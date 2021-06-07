@@ -1,1 +1,9 @@
-<p class="single-card__text"><span class="icon-time"></span>{{ recipe.time_to_cook }} мин.</p>
+{% with request.resolver_match.url_name as current_url %}
+{% if current_url == 'recipe' %}
+<p class="single-card__text"><span class="icon-time"></span>&nbsp;{{ recipe.time_to_cook }} мин.</p>
+{% elif current_url == 'purchase' %}
+<p class="recipe__text"><span class="icon-time"></span> {{ purchase.recipe.time_to_cook }} мин.</p>
+{% else %}
+<p class="card__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
+{% endif %}
+{% endwith %}

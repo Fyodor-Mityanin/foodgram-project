@@ -1,4 +1,0 @@
-<div class="author-subscribe" data-author="{{ author.id }}">
-    {% csrf_token %}
-    <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>{{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}</button></p>
-</div>

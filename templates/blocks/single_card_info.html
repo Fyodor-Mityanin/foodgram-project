@@ -3,13 +3,13 @@
         {% include 'elements/single_card_title.html' %}
         <div class="single-card__favorite">                    
             {% if user.is_authenticated %}
-            {% include 'blocks/icon_favorite_big.html' %}
+            {% include 'elements/button_favorite.html' %}
             {% endif %}
         </div>
     </div>
     <ul class="single-card__items">
         {% for tag in recipe.tags.all %}
-        {% include 'elements/tag_badge.html' %}
+        {% include "elements/single_card_tag.html" %}
         {% endfor %}  
     </ul>
     <div class="single-card__items single-card__items_column">
