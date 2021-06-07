@@ -80,7 +80,7 @@ jobs:
                 sh get-docker.sh
             fi
             echo "---Docker stop and remove web---"
-            sudo docker-compose down --rmi web
+            sudo docker-compose down --rmi all
             echo "---Creating env file---"
             sudo touch .env 
             sudo sh -c "echo 'DB_ENGINE=${{ secrets.DB_ENGINE }}\nPOSTGRES_USER=${{ secrets.POSTGRES_USER }}\nPOSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}\nDB_HOST=${{ secrets.DB_HOST }}\nDB_PORT=${{ secrets.DB_PORT }}\nSECRET_KEY=${{ secrets.SECRET_KEY }}\nALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}' > .env"
