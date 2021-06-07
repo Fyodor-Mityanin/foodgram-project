@@ -75,17 +75,17 @@ jobs:
           script: |
             if [ -f ./get-docker.sh ]; then
                 echo "---Docker already installed---"
+            else
+                curl -fsSL https://get.docker.com -o get-docker.sh
+                sh get-docker.sh
             fi
+            echo "---Docker stop and remove web---"
             sudo docker-compose stop
             sudo docker-compose rm web
+            echo "---Creating env file---"
             sudo touch .env 
-            sudo sh -c "echo 'DB_ENGINE=${{ secrets.DB_ENGINE }}' > .env"
-            sudo sh -c "echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' > .env"
-            sudo sh -c "echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' > .env"
-            sudo sh -c "echo 'DB_HOST=${{ secrets.DB_HOST }}' > .env"
-            sudo sh -c "echo 'DB_PORT=${{ secrets.DB_PORT }}' > .env"
-            sudo sh -c "echo 'SECRET_KEY=${{ secrets.SECRET_KEY }}' > .env"
-            sudo sh -c "echo 'ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}' > .env"
+            sudo sh -c "echo 'DB_ENGINE=${{ secrets.DB_ENGINE }}\nPOSTGRES_USER=${{ secrets.POSTGRES_USER }}\nPOSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}\nDB_HOST=${{ secrets.DB_HOST }}\nDB_PORT=${{ secrets.DB_PORT }}\nSECRET_KEY=${{ secrets.SECRET_KEY }}\nALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}' > .env"
+            echo "---Docker-compose Up---"
             sudo docker-compose up -d
   send_message:
     runs-on: ubuntu-latest
