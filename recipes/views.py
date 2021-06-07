@@ -24,7 +24,7 @@ class Index(ListView):
         tag_list = self.request.GET.getlist('tag')
         return Recipe.objects.all_with_flags(
             self.request.user, tag_list
-        ).distinct()
+        )
 
 
 class AuthorList(ListView):
@@ -40,7 +40,7 @@ class AuthorList(ListView):
             self.request.user, tag_list
         ).filter(
             author=self.author
-        ).distinct()
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,7 +68,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
             self.request.user, tag_list
         ).filter(
             pk__in=Subquery(favorites.values('recipe'))
-        ).distinct()
+        )
 
 
 class RecipeDetail(DetailView):
@@ -182,7 +182,7 @@ def recipe_delete(request, slug):
     if recipe.author != request.user:
         return redirect(recipe.get_absolute_url())
     recipe.delete()
-    return redirect('recipes/index')
+    return redirect('/')
 
 
 def page_not_found(request, exception):

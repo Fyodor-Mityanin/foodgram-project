@@ -22,6 +22,9 @@
         {% endwith %}
         {% block content %}
         {% endblock %}
+        {% if page_obj %}
+            {% include 'parts/paginator.html' with page_obj=page_obj%}
+        {% endif %}
     </main>
     {% include 'parts/footer.html' %}
     {% block script %}

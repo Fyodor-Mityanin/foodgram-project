@@ -8,10 +8,7 @@
         {% include "parts/follow_card.html" with recipes=author.recipes.all %}
     {% endfor %}
 </div>
-{% include 'parts/paginator.html' with page_obj=page_obj%}
 {% endblock %}
-
-
 {% block script %}
 <script src="{% static 'recipes/js/config/config.js' %}"></script>
 <script src="{% static 'recipes/js/components/MainCards.js' %}"></script>

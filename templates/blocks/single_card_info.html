@@ -31,7 +31,7 @@
         {% endif %}
     </ul>
     <div class="single-card__section">
-        {% include 'elements/single_card_section_title.html' with text='Ингридиенты:' %}
+        {% include 'elements/single_card_section_title.html' with text='Ингредиенты:' %}
         <div class="single-card__items single-card__items_column">
             {% for ingredient in recipe.ingredients.all %}
             {% include 'elements/single_card_section_item.html' %}

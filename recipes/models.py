@@ -17,14 +17,10 @@ class RecipeQuerySet(models.QuerySet):
             recipe=models.OuterRef('pk'),
             user=user
         )
-        if not tag_list:
-            return self.annotate(
-                is_favorite=models.Exists(favorite),
-                is_purchase=models.Exists(purchase),
-            )
-        return self.filter(
-            tags_in_recipe__slug__in=tag_list
-        ).annotate(
+        qs = self
+        if tag_list:
+            qs = self.filter(tags_in_recipe__slug__in=tag_list)
+        return qs.annotate(
             is_favorite=models.Exists(favorite),
             is_purchase=models.Exists(purchase),
         ).distinct()
@@ -114,7 +110,12 @@ class Recipe(models.Model):
     )
     time_to_cook = models.PositiveSmallIntegerField(
         'Время приготовления',
-        validators=[MinValueValidator(1)],
+        validators=[
+            MinValueValidator(
+                1,
+                'Время готовки не может быть ноль или меньше'
+            ),
+        ],
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
@@ -222,11 +223,14 @@ class Follow(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                name="prevent_self_follow",
-                check=~models.Q(user=models.F("author")),
+                name='prevent_self_follow',
+                check=~models.Q(user=models.F('author'))
+            ),
+            models.UniqueConstraint(
+                fields=['user', 'author'],
+                name='unique_users_in_folllow'
             ),
         ]
-        unique_together = ['user', 'author']
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
 

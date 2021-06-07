@@ -6,6 +6,6 @@
                 {% include 'blocks/tags_form.html' %}
             {% endfor %}
         </div>
-        <span class="form__error"></span>
+        <span class="form__error">{{ form.tags_in_recipe.errors }}</span>
     </div>
 </div>

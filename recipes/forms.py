@@ -1,4 +1,4 @@
-from django.forms import (CheckboxSelectMultiple, JSONField,
+from django.forms import (CheckboxSelectMultiple, CharField,
                           ModelMultipleChoiceField, ValidationError, models)
 
 from recipes.models import Ingredient, IngredientsInRecipe, Recipe, Tag
@@ -11,51 +11,72 @@ class RecipeForm(models.ModelForm):
         required=True,
         label='Тэги',
     )
-    ingredients_in_recipe = JSONField(required=False)
+    ingredients_in_recipe = CharField(required=False)
 
-    def clean(self):
-        cleaned_data = super().clean()
+    class Meta:
+        model = Recipe
+        fields = (
+            'title',
+            'image',
+            'description',
+            'time_to_cook',
+        )
+
+    def get_ingredients_ids(self):
         ingredients_ids = []
-        cleaned_data['ingredients_in_recipe'] = []
         for key in self.data:
             if 'Ingredient' in key:
                 _, id = key.split('_')
                 if id not in ingredients_ids:
                     ingredients_ids.append(id)
-        if not ingredients_ids:
-            self.add_error(
-                'ingredients_in_recipe',
-                'Нужно выбрать хотя бы один ингредиент'
-            )
-            return cleaned_data
-        unexist_ingredients = []
-        for i in ingredients_ids:
+        return ingredients_ids
+
+    def get_ingredients_list(self, ids, cleaned_data, unexist_ingredients):
+        for i in ids:
             nameIngredient = 'nameIngredient_' + i
             valueIngredient = 'valueIngredient_' + i
             try:
                 ingredient = Ingredient.objects.get(
                     title=self.data[nameIngredient]
                 )
-                cleaned_data['ingredients_in_recipe'].append(
-                    (ingredient, int(self.data[valueIngredient]),)
-                )
             except Ingredient.DoesNotExist:
                 unexist_ingredients.append(self.data[nameIngredient])
-        if unexist_ingredients:
-            self.add_error(
-                'ingredients_in_recipe',
-                f'Ингредиентов {unexist_ingredients} нет в базе'
+            cleaned_data['ingredients_in_recipe'][ingredient] = int(
+                self.data[valueIngredient]
             )
-            return cleaned_data
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cleaned_data['ingredients_in_recipe'] = {}
+        unexist_ingredients = []
+        ids = self.get_ingredients_ids()
+        self.get_ingredients_list(ids, cleaned_data, unexist_ingredients)
+        self.extraclean_ingredients_in_recipe(
+            cleaned_data, unexist_ingredients
+        )
         return cleaned_data
 
     def clean_slug(self):
-        cleaned_data = super().clean()
-        slug = cleaned_data['slug']
+        slug = self.cleaned_data['slug']
         if Recipe.objects.filter(slug=slug).exists():
             raise ValidationError(f'Адрес рецепта "{slug}" уже существует, '
                                   'назовите рецепт по-другому')
         return slug
+
+    def clean_tags_in_recipe(self):
+        tags_in_recipe = self.cleaned_data['tags_in_recipe']
+        if not tags_in_recipe:
+            raise ValidationError('Выбирете хотя бы один тэг')
+        return tags_in_recipe
+
+    def extraclean_ingredients_in_recipe(self, cleaned_data, unexist_ingredients):
+        ingredients_in_recipe = cleaned_data['ingredients_in_recipe']
+        if not ingredients_in_recipe:
+            raise ValidationError('Нужно выбрать хотя бы один ингредиент')
+        if unexist_ingredients:
+            raise ValidationError(f'Ингредиентов {unexist_ingredients}'
+                                  'нет в базе')
+        return ingredients_in_recipe
 
     def save(self):
         if self.errors:
@@ -66,24 +87,14 @@ class RecipeForm(models.ModelForm):
                 )
             )
         self.instance.save()
-        IngredientsInRecipe.objects.filter(recipe=self.instance).delete()
+        self.instance.ingredients.all().delete()
         objs = [
             IngredientsInRecipe(
                 recipe=self.instance,
-                ingredient=ingredient[0],
-                quantity=ingredient[1]
+                ingredient=k,
+                quantity=v,
             )
-            for ingredient in self.cleaned_data['ingredients_in_recipe']
+            for k, v in self.cleaned_data['ingredients_in_recipe'].items()
         ]
         IngredientsInRecipe.objects.bulk_create(objs)
         return self.instance
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'title',
-            'image',
-            'description',
-            'tags_in_recipe',
-            'time_to_cook',
-        )

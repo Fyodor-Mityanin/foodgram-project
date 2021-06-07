@@ -13,10 +13,7 @@
     {% url 'purchase_download' as purchase_download_url %}
     {% include 'elements/button_style_blue_link.html' with text='Скачать список' url=purchase_download_url %}
 </div>
-{% include 'parts/paginator.html' with page_obj=page_obj%}
 {% endblock %}
-
-
 {% block script %}
 <script src="{% static 'recipes/js/config/config.js' %}"></script>
 <script src="{% static 'recipes/js/components/Header.js' %}"></script>
