@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "docker-compose.yaml, nginx/default.conf, static, media"
+          source: "docker-compose.yaml, nginx/default.conf, static, media, data.json"
           target: "~"
 
       - name: executing remote ssh commands to deploy
@@ -73,7 +73,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo docker fedormityanin/foodgram-project:latest
             sudo docker-compose stop
             sudo docker-compose rm web
             touch .env 
