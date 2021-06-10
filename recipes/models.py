@@ -15,7 +15,7 @@ class RecipeQuerySet(models.QuerySet):
         if author:
             qs = qs.filter(author=author)
         if user.is_anonymous:
-            return qs
+            return qs.distinct()
         favorite = Favorite.objects.filter(
             recipe=models.OuterRef('pk'),
             user=user
