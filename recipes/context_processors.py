@@ -7,9 +7,10 @@ def tags_link_generator(tag, tag_list):
     link = '?'
     tmp_tag_list = tag_list.copy()
     if tag in tmp_tag_list:
+        if len(tmp_tag_list) == 1:
+            link += f'tag={tmp_tag_list[0]}&'
+            return link[:-1]
         tmp_tag_list.remove(tag)
-        if not tmp_tag_list:
-            return ''
         for i in tmp_tag_list:
             link += f'tag={i}&'
         return link[:-1]
