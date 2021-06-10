@@ -1,15 +1,19 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
-
+from django.db.models import Subquery
 from users.models import User
 
 
 class RecipeQuerySet(models.QuerySet):
-    def all_with_flags(self, user, tag_list=None):
+    def all_with_flags(self, user, tag_list=None, favorites=None, author=None):
         qs = self
         if tag_list:
             qs = self.filter(tags_in_recipe__slug__in=tag_list)
+        if favorites:
+            qs = qs.filter(pk__in=Subquery(favorites.values('recipe')))
+        if author:
+            qs = qs.filter(author=author)
         if user.is_anonymous:
             return qs
         favorite = Favorite.objects.filter(
@@ -20,6 +24,8 @@ class RecipeQuerySet(models.QuerySet):
             recipe=models.OuterRef('pk'),
             user=user
         )
+        # а как в рецепте аннотировать Юзера?
+        # надо делать кастомный кверисет для Юзеров делать что ли?
         return qs.annotate(
             is_favorite=models.Exists(favorite),
             is_purchase=models.Exists(purchase),

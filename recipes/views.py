@@ -38,9 +38,7 @@ class AuthorList(ListView):
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
         return Recipe.objects.all_with_flags(
-            self.request.user, self.request.tags
-        ).filter(
-            author=self.author
+            self.request.user, self.request.tags, author=self.author
         )
 
     def get_context_data(self, **kwargs):
@@ -66,9 +64,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         favorites = self.request.user.favorites.all()
         return Recipe.objects.all_with_flags(
-            self.request.user, self.request.tags
-        ).filter(
-            pk__in=Subquery(favorites.values('recipe'))
+            self.request.user, self.request.tags, favorites
         )
 
 
@@ -89,12 +85,12 @@ class RecipeDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         recipe = context['recipe']
-        try:
+        if self.request.user.is_anonymous:
+            follow = False
+        else:
             follow = self.request.user.authors.filter(
                 author=recipe.author
             ).exists()
-        except AttributeError:
-            follow = False
         context['follow'] = follow
         return context
 
