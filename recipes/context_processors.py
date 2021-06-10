@@ -22,7 +22,7 @@ def tags_link_generator(tag, tag_list):
 
 def tags(request):
     active_tags = request.GET.getlist('tag')
-    # а как, если ниже всё равно нужен список активных тэгов, 
+    # а как, если ниже всё равно нужен список активных тэгов,
     # а если ничего не выбрано, то подразумевается показ всех рецептов
     if not active_tags:
         active_tags = [tag.slug for tag in Tag.objects.all()]
