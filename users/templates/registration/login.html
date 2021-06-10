@@ -6,9 +6,7 @@
 <link rel="stylesheet" href="{% static 'users/pages/form.css' %}">{% endblock %}
 {% block content %}
 {% if next %}
-{% include 'elements/main_header.html' with text='Вы обратились к странице, доступ к которой возможен только для
-залогиненных пользователей.<br>
-Пожалуйста, авторизуйтесь.' %}
+{% include 'elements/main_header.html' with text='Вы обратились к странице, доступ к которой возможен только для залогиненных пользователей. Пожалуйста, авторизуйтесь.' %}
 {% else %}
 {% include 'elements/main_header.html' with text='Войти на сайт' %}
 {% endif %}

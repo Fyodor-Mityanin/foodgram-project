@@ -15,7 +15,7 @@ def simple_middleware(get_response):
                 query_dict = request.GET.copy()
                 query_dict['page'] = num_pages
                 query_string = query_dict.urlencode()
-                url = '{}?{}'.format(curent_url, query_string)
+                url = f'{curent_url}?{query_string}'
                 return redirect(url)
         return response
 
