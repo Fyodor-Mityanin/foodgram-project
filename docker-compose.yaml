@@ -5,12 +5,6 @@ volumes:
   static_files:
   media_files:
 
-healthcheck:
-  test: curl -s http://web:80 || echo 1
-  interval: 5m
-  timeout: 30s
-  retries: 4
-
 services:
   db:
     image: postgres:12.4
