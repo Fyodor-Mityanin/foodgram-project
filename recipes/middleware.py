@@ -1,15 +1,22 @@
+from django.shortcuts import redirect
+
+
 def simple_middleware(get_response):
-    # One-time configuration and initialization.
 
     def middleware(request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
-
+        tag_list = request.GET.getlist('tag')
+        request.tags = tag_list
         response = get_response(request)
-
-        # Code to be executed for each request/response after
-        # the view is called.
-
+        # с пагинацией придумал только так, как сделать функцией я не придумал
+        if request.GET.get('page'):
+            num_pages = response.context_data['paginator'].num_pages
+            if int(request.GET.get('page')) > num_pages:
+                curent_url = request.path
+                query_dict = request.GET.copy()
+                query_dict['page'] = num_pages
+                query_string = query_dict.urlencode()
+                url = '{}?{}'.format(curent_url, query_string)
+                return redirect(url)
         return response
 
     return middleware

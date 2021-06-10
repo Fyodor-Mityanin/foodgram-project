@@ -11,6 +11,7 @@ from users.models import User
 
 from .forms import RecipeForm
 from .models import IngredientsInRecipe, Purchase, Recipe
+from .paginator import SafePaginator
 
 
 class Index(ListView):
@@ -19,11 +20,11 @@ class Index(ListView):
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/index.html'
     context_object_name = 'recipe'
+    paginator_class = SafePaginator
 
     def get_queryset(self):
-        tag_list = self.request.GET.getlist('tag')
         return Recipe.objects.all_with_flags(
-            self.request.user, tag_list
+            self.request.user, self.request.tags
         )
 
 
@@ -32,24 +33,24 @@ class AuthorList(ListView):
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/author.html'
     context_object_name = 'recipe'
+    paginator_class = SafePaginator
 
     def get_queryset(self):
         self.author = get_object_or_404(User, username=self.kwargs['username'])
-        tag_list = self.request.GET.getlist('tag')
         return Recipe.objects.all_with_flags(
-            self.request.user, tag_list
+            self.request.user, self.request.tags
         ).filter(
             author=self.author
         )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:
+        if self.request.user.is_anonymous:
+            follow = False
+        else:
             follow = self.request.user.authors.filter(
                 author=self.author
             ).exists()
-        except AttributeError:
-            follow = False
         context['author'] = self.author
         context['follow'] = follow
         return context
@@ -60,12 +61,12 @@ class FavoriteList(LoginRequiredMixin, ListView):
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/favorite.html'
     context_object_name = 'recipe'
+    paginator_class = SafePaginator
 
     def get_queryset(self):
-        tag_list = self.request.GET.getlist('tag')
         favorites = self.request.user.favorites.all()
         return Recipe.objects.all_with_flags(
-            self.request.user, tag_list
+            self.request.user, self.request.tags
         ).filter(
             pk__in=Subquery(favorites.values('recipe'))
         )
@@ -103,6 +104,7 @@ class FollowList(LoginRequiredMixin, ListView):
     paginate_by = FOLLOWS_PAGINATE_BY
     template_name = 'recipes/follow.html'
     context_object_name = 'authors'
+    paginator_class = SafePaginator
 
     def get_queryset(self):
         follows = self.request.user.authors.all()
@@ -115,7 +117,7 @@ class PurchaseList(LoginRequiredMixin, ListView):
     context_object_name = 'purchase'
 
     def get_queryset(self):
-        return self.request.user.purchases.all()
+        return self.request.user.purchases.all().select_related('recipe')
 
 
 def PurchaseListDownload(request):

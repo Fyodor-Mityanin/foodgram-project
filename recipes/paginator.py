@@ -18,20 +18,5 @@ class SafePaginator(Paginator):
             if number == 1 and self.allow_empty_first_page:
                 pass
             else:
-                return self.num_pages
-        return number
-
-    def get_page(self, number):
-        """
-        Return a valid page, even if the page argument isn't a number or isn't
-        in range.
-        """
-        try:
-            number = self.validate_number(number)
-            if number > self.num_pages:
                 number = self.num_pages
-        except PageNotAnInteger:
-            number = 1
-        except EmptyPage:
-            number = self.num_pages
-        return self.page(number)
+        return number

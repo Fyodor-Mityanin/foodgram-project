@@ -1,4 +1,4 @@
-from django.forms import (CheckboxSelectMultiple, CharField,
+from django.forms import (CharField, CheckboxSelectMultiple,
                           ModelMultipleChoiceField, ValidationError, models)
 
 from recipes.models import Ingredient, IngredientsInRecipe, Recipe, Tag
