@@ -1,0 +1,98 @@
+name: Foodgram-project workflow
+
+on: [push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        pip install -r requirements.txt
+
+    - name: Lint with flake8
+      run: flake8 . --max-line-length 119 --exclude venv_foodgram,migrations
+ 
+  build_and_push_to_docker_hub:
+    if: github.ref == 'refs/heads/master'
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: fedormityanin/foodgram-project:latest
+
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    needs: build_and_push_to_docker_hub
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: "docker-compose.yaml, nginx/default.conf, static, media, data.json"
+          target: "~"
+
+      - name: executing remote ssh commands to deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            if [ -f ./get-docker.sh ]; then
+                echo "---Docker already installed---"
+            else
+                curl -fsSL https://get.docker.com -o get-docker.sh
+                sh get-docker.sh
+            fi
+            echo "---Docker stop and remove web---"
+            sudo docker-compose down --rmi all
+            echo "---Creating env file---"
+            sudo touch .env 
+            sudo sh -c "echo 'DB_ENGINE=${{ secrets.DB_ENGINE }}\nPOSTGRES_USER=${{ secrets.POSTGRES_USER }}\nPOSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}\nDB_HOST=${{ secrets.DB_HOST }}\nDB_PORT=${{ secrets.DB_PORT }}\nSECRET_KEY=${{ secrets.SECRET_KEY }}\nALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}' > .env"
+            echo "---Docker-compose Up---"
+            sudo docker-compose up -d
+  send_message:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    - name: send message
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: ${{ github.workflow }} успешно выполнен! 

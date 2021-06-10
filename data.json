@@ -843,7 +843,7 @@
         "pk": 1,
         "fields": {
             "password": "pbkdf2_sha256$216000$qJTWEtHZPFM1$c1RFatVXhdwv7NOrG33L5fxTUU4imuOejmPljtaB/nM=",
-            "last_login": "2021-06-10T03:05:42.826Z",
+            "last_login": "2021-06-10T07:51:30.001Z",
             "is_superuser": true,
             "username": "fedor",
             "first_name": "Фёдор",
@@ -1044,14 +1044,6 @@
         "fields": {
             "session_data": ".eJxVjDsOwjAQRO_iGln-sKxNSZ8zWGuvgwPIkeKkQtwdR0oBzRRv3sxbBNrWEraWlzCxuAotTr8sUnrmuhf8oHqfZZrrukxR7oo82iaHmfPrdrh_B4Va6WtndFTkFBpAHG205C17DWgiaOd6jJl9BKeSRdb23JFDgotBDzmz-HwBt_A29Q:1loP7I:JzG-1LcCVgo0Vy2VBtbQfLWVoYUlH9KrXFO5huR5zJQ",
             "expire_date": "2021-06-16T11:32:56.453Z"
-        }
-    },
-    {
-        "model": "sessions.session",
-        "pk": "tsnqj65ho9q8so72fs9gnb7r2br87ctx",
-        "fields": {
-            "session_data": ".eJxVjDsOwjAQRO_iGln-sKxNSZ8zWGuvgwPIkeKkQtwdR0oBzRRv3sxbBNrWEraWlzCxuAotTr8sUnrmuhf8oHqfZZrrukxR7oo82iaHmfPrdrh_B4Va6WtndFTkFBpAHG205C17DWgiaOd6jJl9BKeSRdb23JFDgotBDzmz-HwBt_A29Q:1lrB0o:4tmqYcEZl9lMAjQdvhFDEHFEVpeNfxF2jkNPdYDzv3Q",
-            "expire_date": "2021-06-24T03:05:42.829Z"
         }
     },
     {
@@ -18815,6 +18807,19 @@
         }
     },
     {
+        "model": "recipes.recipe",
+        "pk": 22,
+        "fields": {
+            "author": 1,
+            "title": "eee",
+            "image": "",
+            "description": "hdr",
+            "slug": "eee",
+            "time_to_cook": 45,
+            "pub_date": "2021-06-10T07:52:16.279Z"
+        }
+    },
+    {
         "model": "recipes.ingredientsinrecipe",
         "pk": 1,
         "fields": {
@@ -19184,6 +19189,15 @@
         }
     },
     {
+        "model": "recipes.ingredientsinrecipe",
+        "pk": 48,
+        "fields": {
+            "recipe": 22,
+            "ingredient": 643,
+            "quantity": 432
+        }
+    },
+    {
         "model": "recipes.tagsinrecipe",
         "pk": 1,
         "fields": {
@@ -19456,6 +19470,30 @@
         }
     },
     {
+        "model": "recipes.favorite",
+        "pk": 22,
+        "fields": {
+            "user": 1,
+            "recipe": 19
+        }
+    },
+    {
+        "model": "recipes.favorite",
+        "pk": 23,
+        "fields": {
+            "user": 1,
+            "recipe": 13
+        }
+    },
+    {
+        "model": "recipes.favorite",
+        "pk": 24,
+        "fields": {
+            "user": 1,
+            "recipe": 17
+        }
+    },
+    {
         "model": "recipes.purchase",
         "pk": 74,
         "fields": {
@@ -19481,14 +19519,6 @@
     },
     {
         "model": "recipes.purchase",
-        "pk": 77,
-        "fields": {
-            "user": 1,
-            "recipe": 12
-        }
-    },
-    {
-        "model": "recipes.purchase",
         "pk": 78,
         "fields": {
             "user": 1,
@@ -19501,14 +19531,6 @@
         "fields": {
             "user": 1,
             "recipe": 17
-        }
-    },
-    {
-        "model": "recipes.purchase",
-        "pk": 80,
-        "fields": {
-            "user": 1,
-            "recipe": 10
         }
     }
 ]
