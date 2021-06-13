@@ -10,10 +10,6 @@ class FollowSerializer(serializers.ModelSerializer):
         author = data['author']
         if user == author:
             raise serializers.ValidationError('You cant follow yourself')
-        if Follow.objects.filter(user=user, author=author).exists():
-            raise serializers.ValidationError(
-                'This subscribe is already exist'
-            )
         return data
 
     user = serializers.SlugRelatedField(
