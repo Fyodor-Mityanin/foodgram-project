@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
-from django.db.models import Subquery
 from users.models import User
 
 
@@ -11,7 +10,7 @@ class RecipeQuerySet(models.QuerySet):
         if tag_list:
             qs = self.filter(tags_in_recipe__slug__in=tag_list)
         if favorites:
-            qs = qs.filter(pk__in=Subquery(favorites.values('recipe')))
+            qs = qs.filter(pk__in=models.Subquery(favorites.values('recipe')))
         if author:
             qs = qs.filter(author=author)
         if user.is_anonymous:
@@ -24,8 +23,6 @@ class RecipeQuerySet(models.QuerySet):
             recipe=models.OuterRef('pk'),
             user=user
         )
-        # а как в рецепте аннотировать Юзера?
-        # надо делать кастомный кверисет для Юзеров делать что ли?
         return qs.annotate(
             is_favorite=models.Exists(favorite),
             is_purchase=models.Exists(purchase),
@@ -172,7 +169,12 @@ class IngredientsInRecipe(models.Model):
     quantity = models.PositiveSmallIntegerField(
         'Количество',
         help_text='Сколько класть?',
-        validators=[MinValueValidator(1)],
+        validators=[
+            MinValueValidator(
+                1,
+                'Количество ингредиентов не может быть ноль или меньше'
+            )
+        ],
     )
 
     class Meta:

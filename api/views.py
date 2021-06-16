@@ -1,8 +1,7 @@
 from django.http import JsonResponse
-from rest_framework import mixins, status, viewsets
+from rest_framework import mixins, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView, get_object_or_404
-from rest_framework.response import Response
 
 from recipes.models import Favorite, Follow, Ingredient, Purchase, Recipe, User
 
@@ -50,8 +49,9 @@ class CommonAPIViewSet(CreateDestroyViewSet):
         serializer = self.get_serializer(data=self.get_data(request))
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        if serializer.instance:
+            return SUCCESS_RESPONSE
+        return UNSUCCESS_RESPONSE
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_obj()

@@ -1,8 +1,9 @@
 <div class="tags__item">
+    
     <input type="checkbox" name="{{ tag.data.name }}" value="{{ tag.data.value.instance.id }}"
         id="{{ tag.id_for_label }}"
         class="tags__checkbox tags__checkbox_style_{{ tag.data.value.instance.color }}"
-        {{ tag.data.selected|yesno:"checked, " }}>
+        {% if tag.data.value.instance in list_of_tags %}checked{% endif %}>
     <label for="{{ tag.id_for_label }}" class="tags__label">{{ tag.choice_label }}</label>
     {{ tag.error }}
 </div>

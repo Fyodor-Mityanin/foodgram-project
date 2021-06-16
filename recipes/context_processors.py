@@ -1,29 +1,22 @@
 from django.db.models import BooleanField, Case, Value, When
+from django.utils import http
 
 from .models import Tag
 
 
 def tags_link_generator(tag, tag_list):
-    link = '?'
-    tmp_tag_list = tag_list.copy()
-    if tag in tmp_tag_list:
-        if len(tmp_tag_list) == 1:
-            link += f'tag={tmp_tag_list[0]}&'
-            return link[:-1]
-        tmp_tag_list.remove(tag)
-        for i in tmp_tag_list:
-            link += f'tag={i}&'
-        return link[:-1]
-    tmp_tag_list.append(tag)
-    for i in tmp_tag_list:
-        link += f'tag={i}&'
-    return link[:-1]
+    tag_dict = {'tag': tag_list.copy()}
+    if tag in tag_dict['tag']:
+        if len(tag_dict['tag']) == 1:
+            return http.urlencode(tag_dict, doseq=True)
+        tag_dict['tag'].remove(tag)
+        return http.urlencode(tag_dict, doseq=True)
+    tag_dict['tag'].append(tag)
+    return http.urlencode(tag_dict, doseq=True)
 
 
 def tags(request):
     active_tags = request.GET.getlist('tag')
-    # а как, если ниже всё равно нужен список активных тэгов,
-    # а если ничего не выбрано, то подразумевается показ всех рецептов
     if not active_tags:
         active_tags = [tag.slug for tag in Tag.objects.all()]
     tags = Tag.objects.annotate(

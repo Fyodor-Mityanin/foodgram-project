@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{% if form.instance == recipe %}Редактирование рецепта{% else %}Создание рецепта{% endif %}{% endblock%}
+{% block title %}{{ form.instance.title|yesno:"Редактирование рецепта,Создание рецепта" }}{% endblock%}
 {% load static %}
 {% load custom_filters %}
 {% block headcss %}
@@ -11,7 +11,7 @@
         enctype="multipart/form-data">
         {% csrf_token %}
         {% include 'blocks/form_group.html' with field=form.title css='form__input' %}
-        {% include 'parts/form_tags.html' %}
+        {% include 'parts/form_tags.html' with list_of_tags=form.instance.list_of_tags %}
         {% include 'parts/form_ingredients.html' with field=form.ingredients_in_recipe %}
         {% include 'blocks/form_group.html' with field=form.time_to_cook label='минут' time=True css='form__input' %}
         {% include 'blocks/form_group.html' with field=form.description css='form__textarea' %}

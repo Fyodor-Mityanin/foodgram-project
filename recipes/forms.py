@@ -66,7 +66,7 @@ class RecipeForm(models.ModelForm):
     def clean_tags_in_recipe(self):
         tags_in_recipe = self.cleaned_data['tags_in_recipe']
         if not tags_in_recipe:
-            raise ValidationError('Выбирете хотя бы один тэг')
+            raise ValidationError('Выберите хотя бы один тэг')
         return tags_in_recipe
 
     def extraclean_ingredients_in_recipe(self, cleaned_data, unexist_ingredients):
