@@ -85,13 +85,11 @@ class RecipeDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         recipe = context['recipe']
-        # Но как??
-        if self.request.user.is_anonymous:
-            follow = self.request.user.is_anonymous
-        else:
-            follow = self.request.user.authors.filter(
+        follow = (
+            self.request.user.is_anonymous or self.request.user.authors.filter(
                 author=recipe.author
             ).exists()
+        )
         context['follow'] = follow
         return context
 
