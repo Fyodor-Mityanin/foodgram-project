@@ -1,5 +1,5 @@
 <div class="single-card" data-id="{{ recipe.id }}" data-author="{{ recipe.author.id }}">
     {% csrf_token %}
-    {% include 'elements/single_card_image.html' %}
+    {% include 'elements/card_image.html' with cur_template='single_card' %}
     {% include 'blocks/single_card_info.html' %}
 </div>

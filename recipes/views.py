@@ -15,7 +15,7 @@ from .paginator import SafePaginator
 
 
 class Index(ListView):
-    """Список всех рецептов."""
+    """Выводит все рецепты."""
     model = Recipe
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/index.html'
@@ -29,7 +29,7 @@ class Index(ListView):
 
 
 class AuthorList(ListView):
-    """Список рецептов автора."""
+    """Выводит все рецепты определённого автора."""
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/author.html'
     context_object_name = 'recipe'
@@ -55,7 +55,7 @@ class AuthorList(ListView):
 
 
 class FavoriteList(LoginRequiredMixin, ListView):
-    """Список любимых рецептов."""
+    """Выводит все рецепты добавленные в избранное."""
     paginate_by = RECIPES_PAGINATE_BY
     template_name = 'recipes/favorite.html'
     context_object_name = 'recipe'
@@ -69,7 +69,7 @@ class FavoriteList(LoginRequiredMixin, ListView):
 
 
 class RecipeDetail(DetailView):
-    """Страница рецепта"""
+    """Выводит один рецепт."""
     model = Recipe
     template_name = 'recipes/recipe_detail.html'
     context_object_name = 'recipe'
@@ -85,8 +85,9 @@ class RecipeDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         recipe = context['recipe']
+        # Но как??
         if self.request.user.is_anonymous:
-            follow = False
+            follow = self.request.user.is_anonymous
         else:
             follow = self.request.user.authors.filter(
                 author=recipe.author
@@ -96,7 +97,7 @@ class RecipeDetail(DetailView):
 
 
 class FollowList(LoginRequiredMixin, ListView):
-    """Список подписок"""
+    """Выводит всех авторов на которых подписан пользователь."""
     paginate_by = FOLLOWS_PAGINATE_BY
     template_name = 'recipes/follow.html'
     context_object_name = 'authors'
@@ -108,7 +109,7 @@ class FollowList(LoginRequiredMixin, ListView):
 
 
 class PurchaseList(LoginRequiredMixin, ListView):
-    """Список покупок."""
+    """Выводит все рецепты которые добавлены в список покупок."""
     template_name = 'recipes/purchase.html'
     context_object_name = 'purchase'
 
@@ -117,6 +118,7 @@ class PurchaseList(LoginRequiredMixin, ListView):
 
 
 def PurchaseListDownload(request):
+    """Выводит список ингредиентов из списка покупок в txt файл."""
     response = HttpResponse(content_type='text/txt')
     response['Content-Disposition'] = 'attachment; filename="purchase_list.txt"'
     purchase_list = request.user.purchases.all()
@@ -135,7 +137,7 @@ def PurchaseListDownload(request):
 
 @ login_required
 def new_recipe(request):
-    """Создание рецепта"""
+    """Создаёт новый рецепт."""
     form = RecipeForm(request.POST or None, files=request.FILES or None,)
     if form.is_valid():
         form.instance.author = request.user
@@ -153,7 +155,7 @@ def new_recipe(request):
 
 @ login_required
 def recipe_edit(request, slug):
-    """Редактирование рецепта"""
+    """Редактирует рецепт."""
     recipe = get_object_or_404(Recipe, slug=slug)
     if recipe.author != request.user:
         return redirect(recipe.get_absolute_url())
@@ -175,27 +177,28 @@ def recipe_edit(request, slug):
 
 @ login_required
 def recipe_delete(request, slug):
-    """Удаление рецепта"""
+    """Удаляет рецепт."""
     recipe = get_object_or_404(Recipe, slug=slug)
     if recipe.author != request.user:
         return redirect(recipe.get_absolute_url())
     recipe.delete()
-    return redirect('/')
+    return redirect('recipes:index')
 
 
 @ login_required
 def purchase_delete(request, slug):
-    """Удаление покупки"""
+    """Удаляет рецепт из списка покупок."""
     purchase = get_object_or_404(
         Purchase,
         user=request.user,
         recipe__slug=slug,
     )
     purchase.delete()
-    return redirect('purchase')
+    return redirect('recipes:purchase')
 
 
 def page_not_found(request, exception):
+    """Выводит страницу 404."""
     return render(
         request,
         'misc/404.html',
@@ -205,4 +208,5 @@ def page_not_found(request, exception):
 
 
 def server_error(request):
+    """Выводит страницу 500."""
     return render(request, 'misc/500.html', status=500)

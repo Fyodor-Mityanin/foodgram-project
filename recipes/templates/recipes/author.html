@@ -3,11 +3,11 @@
 {% load static %}
 {% block content %}
 {% if user.is_authenticated and request.user != author %}
-{% include 'elements/button_subscribe.html' %}
+{% include 'elements/button_subscribe.html' with cur_template='author' %}
 {% endif %}
 <div class="card-list">
     {% for recipe in recipe %}
-    {% include "parts/recipe_card.html" with recipe=recipe %}
+    {% include "parts/recipe_card.html" %}
     {% endfor %}
 </div>
 {% endblock %}

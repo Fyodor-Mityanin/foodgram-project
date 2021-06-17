@@ -15,15 +15,11 @@
 <body class="body">
     {% include 'parts/menu.html' %}
     <main class="main container">
-        {% with request.resolver_match.url_name as current_url %}
-        {% if current_url == 'index' or current_url == 'favorite' or current_url == 'author' %}
-            {% include 'parts/nav.html' %}
-        {% endif %}
-        {% endwith %}
+        {% include 'parts/nav.html' with current_url=request.resolver_match.view_name %}
         {% block content %}
         {% endblock %}
         {% if page_obj %}
-            {% include 'parts/paginator.html' with page_obj=page_obj%}
+            {% include 'parts/paginator.html' %}
         {% endif %}
     </main>
     {% include 'parts/footer.html' %}

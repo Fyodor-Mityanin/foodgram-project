@@ -1,16 +1,14 @@
 {% load custom_filters %}
-{% with request.resolver_match.url_name as current_url %}
-{% if current_url == 'recipe' %}
+{% if cur_template == 'single_card_info' %}
     {% if recipe.is_purchase %}
     <li class="single-card__item"><button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check"></span>Рецепт добавлен</button></li>
     {% else %}
     <li class="single-card__item"><button class="button button_style_blue" name="purchases" data-out><span class="icon-plus"></span>Добавить в покупки</button></li>
     {% endif %}
-{% else %}
+{% elif cur_template == 'card_footer' %}
     {% if recipe.is_purchase %}
     <button class="button button_style_light-blue-outline" name="purchases"><span class="icon-check button__icon"></span>Рецепт добавлен</button>
     {% else %}
     <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
     {% endif %}
 {% endif %}
-{% endwith %}

@@ -1,5 +1,5 @@
 <div class="card" data-id="{{ recipe.id }}">
-    {% include "elements/card_image.html" %}
+    {% include "elements/card_image.html" with cur_template='recipe_card' %}
     {% include "blocks/card_body.html" %}
     {% include "blocks/card_footer.html" %}
 </div>

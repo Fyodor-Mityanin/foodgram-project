@@ -1,5 +1,4 @@
-{% with request.resolver_match.url_name as current_url %}
-{% if current_url == 'author' %}
+{% if cur_template == 'author' %}
 <div class="author-subscribe" data-author="{{ author.id }}">
     {% csrf_token %}
     <p style="padding: 0 0 2em 0;">
@@ -8,11 +7,10 @@
         </button>
     </p>
 </div>
-{% else %}
+{% elif cur_template == 'single_card_info' %}
 <li class="single-card__item">
     <button class="button button_style_light-blue button_size_subscribe" name="subscribe" {{ follow|yesno:",data-out" }}>
         {{ follow|yesno:"Отписаться от автора,Подписаться на автора" }}
     </button>
 </li>
 {% endif %}
-{% endwith %}

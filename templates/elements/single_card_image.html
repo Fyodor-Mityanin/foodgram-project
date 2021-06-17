@@ -1,3 +1,0 @@
-{% load static %}
-<img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
-    alt="какой-то текст" class="single-card__image">

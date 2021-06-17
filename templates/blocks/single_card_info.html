@@ -3,7 +3,7 @@
         {% include 'elements/single_card_title.html' %}
         <div class="single-card__favorite">                    
             {% if user.is_authenticated %}
-            {% include 'elements/button_favorite.html' %}
+            {% include 'elements/button_favorite.html' with cur_template='single_card_info' %}
             {% endif %}
         </div>
     </div>
@@ -13,23 +13,23 @@
         {% endfor %}  
     </ul>
     <div class="single-card__items single-card__items_column">
-        {% include 'elements/icon_time.html' %}
+        {% include 'elements/icon_time.html' with cur_template='single_card_info' %}
         <ul class="single-card__items">
-            {% include 'elements/icon_user.html' %}
+            {% include 'elements/icon_user.html' with cur_template='single_card_info' %}
             {% if user.is_authenticated and user == recipe.author %}
-            {% url 'recipe_edit' recipe.slug as recipe_edit_url %}
+            {% url 'recipes:recipe_edit' recipe.slug as recipe_edit_url %}
             {% include 'elements/single_card_link.html' with text='Редактировать рецепт' url=recipe_edit_url %}
             {% endif %}
         </ul>
     </div>
+    {% if user.is_authenticated %}
     <ul class="single-card__items">
-        {% if user.is_authenticated %}
-            {% include 'elements/button_purchase.html' %}
+            {% include 'elements/button_purchase.html' with cur_template='single_card_info' %}
             {% if request.user != recipe.author %}
-            {% include 'elements/button_subscribe.html' %}
+            {% include 'elements/button_subscribe.html' with cur_template='single_card_info' %}
             {% endif %}
-        {% endif %}
     </ul>
+    {% endif %}
     <div class="single-card__section">
         {% include 'elements/single_card_section_title.html' with text='Ингредиенты:' %}
         <div class="single-card__items single-card__items_column">

@@ -136,7 +136,7 @@ class Recipe(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('recipe', kwargs={'slug': self.slug})
+        return reverse('recipes:recipe', kwargs={'slug': self.slug})
 
     def short_description(self):
         return self.description[:150]

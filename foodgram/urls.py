@@ -16,10 +16,10 @@ urlpatterns = [
 
 urlpatterns += [
     path('admin/', admin.site.urls),
-    path('auth/', include('users.urls')),
-    path('auth/', include('django.contrib.auth.urls')),
+    path('about/', include('about.urls', namespace='about')),
+    path('auth/', include('users.urls', namespace='users')),
     path('api/', include('api.urls')),
-    path('', include('recipes.urls')),
+    path('', include('recipes.urls', namespace='recipes')),
 ]
 
 if settings.DEBUG:

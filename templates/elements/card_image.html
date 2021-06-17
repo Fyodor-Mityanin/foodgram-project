@@ -1,10 +1,13 @@
 {% load static %}
-{% with request.resolver_match.url_name as current_url %}
-{% if current_url == 'purchase' %}
-<img src="{% if purchase.recipe.image %} {{ purchase.recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="какой-то текст" class="recipe__image recipe__image_big">
-{% else %}
+{% if cur_template == 'shopping_list_item' %}
+<img src="{% if purchase.recipe.image %} {{ purchase.recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
+    alt="{{purchase.recipe.title}}" class="recipe__image recipe__image_big">
+{% elif cur_template == 'recipe_card' %}
 <a href="{{ recipe.get_absolute_url }}" class="link"></a>
-<img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}" alt="Какой-то текст" class="card__image">
+<img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
+    alt="{{recipe.title}}" class="card__image">
 </a>
+{% elif cur_template == 'single_card' %}
+<img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
+    alt="{{recipe.title}}" class="single-card__image">
 {% endif %}
-{% endwith %}

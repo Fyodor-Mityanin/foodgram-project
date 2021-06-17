@@ -72,10 +72,15 @@ class RecipeForm(models.ModelForm):
     def extraclean_ingredients_in_recipe(self, cleaned_data, unexist_ingredients):
         ingredients_in_recipe = cleaned_data['ingredients_in_recipe']
         if not ingredients_in_recipe:
-            raise ValidationError('Нужно выбрать хотя бы один ингредиент')
+            self.add_error(
+                'ingredients_in_recipe',
+                'Нужно выбрать хотя бы один ингредиент'
+            )
         if unexist_ingredients:
-            raise ValidationError(f'Ингредиентов {unexist_ingredients}'
-                                  'нет в базе')
+            self.add_error(
+                'ingredients_in_recipe',
+                'Ингредиентов {unexist_ingredients} нет в базе'
+            )
         return ingredients_in_recipe
 
     def save(self):

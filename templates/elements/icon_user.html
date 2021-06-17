@@ -1,15 +1,13 @@
-{% with request.resolver_match.url_name as current_url %}
-{% if current_url == 'recipe' %}
+{% if cur_template == 'single_card_info' %}
 <li class="single-card__item">
     <p class="single-card__text">
         <span class="icon-user"></span>
-        <a href="{% url 'author' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a>
+        <a href="{% url 'recipes:author' recipe.author.username %}" style="color: black">{% firstof recipe.author.get_full_name recipe.author.username %}</a>
     </p>
 </li>
-{% else %}
+{% elif cur_template == 'card_body' %}
 <p class="card__text">
     <span class="icon-user"></span>
-    <a href="{% url 'author' recipe.author.username %}" style="color: black">{{ recipe.author.get_full_name }}</a>
+    <a href="{% url 'recipes:author' recipe.author.username %}" style="color: black">{% firstof recipe.author.get_full_name recipe.author.username %}</a>
 </p>
 {% endif %}
-{% endwith %}

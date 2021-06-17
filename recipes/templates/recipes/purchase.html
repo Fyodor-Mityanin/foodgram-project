@@ -10,7 +10,7 @@
         {% include 'parts/shopping_list_item.html' %}
         {% endfor %}
     </ul>
-    {% url 'purchase_download' as purchase_download_url %}
+    {% url 'recipes:purchase_download' as purchase_download_url %}
     {% include 'elements/button_style_blue_link.html' with text='Скачать список' url=purchase_download_url %}
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 <div class="card__footer">
     {% csrf_token %}
     {% if user.is_authenticated %}
-        {% include 'elements/button_purchase.html' %}
-        {% include 'elements/button_favorite.html' %}
+        {% include 'elements/button_purchase.html' with cur_template='card_footer' %}
+        {% include 'elements/button_favorite.html' with cur_template='card_footer' %}
     {% endif %}
 </div>

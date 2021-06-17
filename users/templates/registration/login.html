@@ -11,7 +11,7 @@
 {% include 'elements/main_header.html' with text='Войти на сайт' %}
 {% endif %}
 <div class="form-container">
-    <form class="form" action="{% url 'login' %}" method="POST">
+    <form class="form" action="{% url 'users:login' %}" method="POST">
         {% csrf_token %}
         {% for field in form %}
         {% include 'blocks/form_group.html' with field=field css='form__input' %}
