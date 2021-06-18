@@ -39,11 +39,11 @@ class RecipeForm(models.ModelForm):
                 ingredient = Ingredient.objects.get(
                     title=self.data[nameIngredient]
                 )
+                cleaned_data['ingredients_in_recipe'][ingredient] = int(
+                    self.data[valueIngredient]
+                )
             except Ingredient.DoesNotExist:
                 unexist_ingredients.append(self.data[nameIngredient])
-            cleaned_data['ingredients_in_recipe'][ingredient] = int(
-                self.data[valueIngredient]
-            )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -71,15 +71,16 @@ class RecipeForm(models.ModelForm):
 
     def extraclean_ingredients_in_recipe(self, cleaned_data, unexist_ingredients):
         ingredients_in_recipe = cleaned_data['ingredients_in_recipe']
-        if not ingredients_in_recipe:
+        if not ingredients_in_recipe and not unexist_ingredients:
             self.add_error(
                 'ingredients_in_recipe',
                 'Нужно выбрать хотя бы один ингредиент'
             )
         if unexist_ingredients:
+            list_of_unexist_ingredients = ', '.join(unexist_ingredients)
             self.add_error(
                 'ingredients_in_recipe',
-                'Ингредиентов {unexist_ingredients} нет в базе'
+                f'Ингредиентов {list_of_unexist_ingredients} нет в базе'
             )
         return ingredients_in_recipe
 
