@@ -17,9 +17,10 @@ def tags_link_generator(tag, tag_list):
 
 def tags(request):
     active_tags = request.GET.getlist('tag')
+    tags = Tag.objects.all()
     if not active_tags:
-        active_tags = [tag.slug for tag in Tag.objects.all()]
-    tags = Tag.objects.annotate(
+        active_tags = [tag.slug for tag in tags]
+    tags = tags.annotate(
         is_active=Case(
             When(slug__in=active_tags, then=Value(True)),
             default=Value(False),
