@@ -77,11 +77,8 @@ class RecipeForm(models.ModelForm):
                 'Нужно выбрать хотя бы один ингредиент'
             )
         if unexist_ingredients:
-            list_of_unexist_ingredients = ', '.join(unexist_ingredients)
-            self.add_error(
-                'ingredients_in_recipe',
-                f'Ингредиентов {list_of_unexist_ingredients} нет в базе'
-            )
+            error_msg = self.list_of_unexist_ingredients(unexist_ingredients)
+            self.add_error('ingredients_in_recipe', f'{error_msg}')
         return ingredients_in_recipe
 
     def save(self):
@@ -104,3 +101,9 @@ class RecipeForm(models.ModelForm):
         ]
         IngredientsInRecipe.objects.bulk_create(objs)
         return self.instance
+
+    def list_of_unexist_ingredients(self, unexist_ingredients):
+        if len(unexist_ingredients) == 1:
+            return f'Ингредиента {unexist_ingredients[0]} нет в базе'
+        list = ', '.join(unexist_ingredients)
+        return f'Ингредиентов {list} нет в базе'
