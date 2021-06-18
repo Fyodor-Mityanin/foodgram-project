@@ -1,5 +1,5 @@
 from django.db.models import BooleanField, Case, Value, When
-from django.utils import http
+from django.utils.http import urlencode
 
 from .models import Tag
 
@@ -8,11 +8,11 @@ def tags_link_generator(tag, tag_list):
     tag_dict = {'tag': tag_list.copy()}
     if tag in tag_dict['tag']:
         if len(tag_dict['tag']) == 1:
-            return http.urlencode(tag_dict, doseq=True)
+            return urlencode(tag_dict, doseq=True)
         tag_dict['tag'].remove(tag)
-        return http.urlencode(tag_dict, doseq=True)
+        return urlencode(tag_dict, doseq=True)
     tag_dict['tag'].append(tag)
-    return http.urlencode(tag_dict, doseq=True)
+    return urlencode(tag_dict, doseq=True)
 
 
 def tags(request):
