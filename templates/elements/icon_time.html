@@ -1,7 +1,1 @@
-{% if cur_template == 'single_card_info' %}
-<p class="single-card__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
-{% elif cur_template == 'shopping_list_item' %}
-<p class="recipe__text"><span class="icon-time"></span> {{ purchase.recipe.time_to_cook }} мин.</p>
-{% elif cur_template == 'card_body' %}
-<p class="card__text"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>
-{% endif %}
+<p class="{{ css }}"><span class="icon-time"></span> {{ recipe.time_to_cook }} мин.</p>

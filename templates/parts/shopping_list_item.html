@@ -1,9 +1,9 @@
 {% load static %}
 <li class="shopping-list__item">
     <div class="recipe recipe_reverse">
-        {% include "elements/card_image.html" with cur_template='shopping_list_item' %}
-        {% include "elements/recipe_title.html" with cur_template='shopping_list_item' %}
-        {% include "elements/icon_time.html" with cur_template='shopping_list_item' %}
+        {% include "elements/card_image.html" with recipe=purchase.recipe css="recipe__image recipe__image_big" %}
+        {% include "elements/recipe_title.html" with cur_template="shopping_list_item" %}
+        {% include "elements/icon_time.html" with css="recipe__text" recipe=purchase.recipe %}
     </div>
     {% include "elements/shopping_list_delete_button.html" %}
 </li>

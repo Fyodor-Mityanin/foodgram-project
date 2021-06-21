@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse
 from rest_framework import mixins, viewsets
 from rest_framework.filters import SearchFilter
@@ -43,7 +44,11 @@ class CommonAPIViewSet(CreateDestroyViewSet):
 
     def get_obj(self):
         kwargs = self.get_kwargs_for_get_obj()
-        return get_object_or_404(self.get_obj_model, **kwargs)
+        try:
+            obj = self.get_obj_model.objects.get(**kwargs)
+        except ObjectDoesNotExist:
+            return False
+        return obj
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=self.get_data(request))
@@ -55,6 +60,8 @@ class CommonAPIViewSet(CreateDestroyViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_obj()
+        if not instance:
+            return UNSUCCESS_RESPONSE
         self.perform_destroy(instance)
         return SUCCESS_RESPONSE
 

@@ -13,16 +13,16 @@
 </head>
 
 <body class="body">
-    {% include 'parts/menu.html' %}
+    {% include "parts/menu.html" %}
     <main class="main container">
-        {% include 'parts/nav.html' with current_url=request.resolver_match.view_name %}
+        {% include "parts/nav.html" with current_url=request.resolver_match.view_name %}
         {% block content %}
         {% endblock %}
         {% if page_obj %}
-            {% include 'parts/paginator.html' %}
+        {% include "parts/paginator.html" %}
         {% endif %}
     </main>
-    {% include 'parts/footer.html' %}
+    {% include "parts/footer.html" %}
     {% block script %}
     {% endblock %}
 </body>

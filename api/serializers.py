@@ -40,9 +40,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
             user=self.context['request'].user,
             recipe=data['recipe'],
         ).exists():
-            raise serializers.ValidationError(
-                'This Favorite is already exist'
-            )
+            raise serializers.ValidationError('This Favorite is already exist')
         return data
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),
@@ -65,9 +63,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
             user=self.context['request'].user,
             recipe=data['recipe'],
         ).exists():
-            raise serializers.ValidationError(
-                'This Purchase is already exist'
-            )
+            raise serializers.ValidationError('This Purchase is already exist')
         return data
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),

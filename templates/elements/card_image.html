@@ -1,13 +1,3 @@
 {% load static %}
-{% if cur_template == 'shopping_list_item' %}
-<img src="{% if purchase.recipe.image %} {{ purchase.recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
-    alt="{{purchase.recipe.title}}" class="recipe__image recipe__image_big">
-{% elif cur_template == 'recipe_card' %}
-<a href="{{ recipe.get_absolute_url }}" class="link"></a>
 <img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
-    alt="{{recipe.title}}" class="card__image">
-</a>
-{% elif cur_template == 'single_card' %}
-<img src="{% if recipe.image %} {{ recipe.image.url }} {% else %} {% static 'recipes/nophoto.png' %} {% endif %}"
-    alt="{{recipe.title}}" class="single-card__image">
-{% endif %}
+    alt="{{recipe.title}}" class="{{ css }}">

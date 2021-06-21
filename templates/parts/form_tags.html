@@ -3,7 +3,7 @@
     <div class="form__field-group">
         <div class="tags">
             {% for tag in form.tags_in_recipe %}
-                {% include 'blocks/tags_form.html' %}
+                {% include "blocks/tags_form.html" %}
             {% endfor %}
         </div>
         <span class="form__error">{{ form.tags_in_recipe.errors }}</span>

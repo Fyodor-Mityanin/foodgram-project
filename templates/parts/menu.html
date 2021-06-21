@@ -2,30 +2,30 @@
 <nav class="nav">
     <div class="nav__container container">
         <ul class="nav__items list">
-            {% url 'recipes:index' as index_url %}
-            {% include 'elements/nav_item.html' with text='Рецепты' url=index_url %}
+            {% url "recipes:index" as index_url %}
+            {% include "elements/nav_item.html" with text="Рецепты" url=index_url %}
             {% if user.is_authenticated %}
-            {% url 'recipes:follow' as follow_url %}
-            {% include 'elements/nav_item.html' with text='Мои подписки' url=follow_url %}
-            {% url 'recipes:new_recipe' as new_recipe_url %}
-            {% include 'elements/nav_item.html' with text='Создать рецепт' url=new_recipe_url %}
-            {% url 'recipes:favorite' as favorite_url %}
-            {% include 'elements/nav_item.html' with text='Избранное' url=favorite_url %}
+            {% url "recipes:follow" as follow_url %}
+            {% include "elements/nav_item.html" with text="Мои подписки" url=follow_url %}
+            {% url "recipes:new_recipe" as new_recipe_url %}
+            {% include "elements/nav_item.html" with text="Создать рецепт" url=new_recipe_url %}
+            {% url "recipes:favorite" as favorite_url %}
+            {% include "elements/nav_item.html" with text="Избранное" url=favorite_url %}
             {% endif %}
-            {% url 'recipes:purchase' as purchase_url %}
-            {% include 'elements/nav_item_purchase.html' with text='Список покупок' url=purchase_url %}
+            {% url "recipes:purchase" as purchase_url %}
+            {% include "elements/nav_item_purchase.html" with text="Список покупок" url=purchase_url %}
         </ul>
         <ul class="nav__items list">
             {% if user.is_authenticated %}
-            {% url 'users:password_change' as password_change_url %}
-            {% include 'elements/nav_item.html' with text='Изменить пароль' url=password_change_url %}
-            {% url 'users:logout' as logout_url %}
-            {% include 'elements/nav_item.html' with text='Выход' url=logout_url %}
+            {% url "users:password_change" as password_change_url %}
+            {% include "elements/nav_item.html" with text="Изменить пароль" url=password_change_url %}
+            {% url "users:logout" as logout_url %}
+            {% include "elements/nav_item.html" with text="Выход" url=logout_url %}
             {% else %}
-            {% url 'users:login' as login_url %}
-            {% include 'elements/nav_item.html' with text='Войти' url=login_url %}
-            {% url 'users:signup' as signup_url %}
-            {% include 'elements/nav_item.html' with text='Создать аккаунт' url=signup_url %}
+            {% url "users:login" as login_url %}
+            {% include "elements/nav_item.html" with text="Войти" url=login_url %}
+            {% url "users:signup" as signup_url %}
+            {% include "elements/nav_item.html" with text="Создать аккаунт" url=signup_url %}
             {% endif %}
         </ul>
     </div>

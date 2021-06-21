@@ -13,6 +13,7 @@ class TagsInline(admin.TabularInline):
     model = TagsInRecipe
     min_num = 1
     extra = 2
+    max_num = 3
 
 
 class RecipeAdmin(admin.ModelAdmin):

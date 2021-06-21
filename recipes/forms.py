@@ -78,7 +78,9 @@ class RecipeForm(models.ModelForm):
             )
         if unexist_ingredients:
             error_msg = self.list_of_unexist_ingredients(unexist_ingredients)
+            clean_ingredients = cleaned_data['ingredients_in_recipe']
             self.add_error('ingredients_in_recipe', f'{error_msg}')
+            cleaned_data['ingredients_in_recipe'] = clean_ingredients
         return ingredients_in_recipe
 
     def save(self):

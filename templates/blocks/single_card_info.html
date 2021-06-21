@@ -1,11 +1,11 @@
 <div class="single-card__info">
     <div class="single-card__header-info">
         {% include 'elements/single_card_title.html' %}
-        <div class="single-card__favorite">                    
-            {% if user.is_authenticated %}
-            {% include 'elements/button_favorite.html' with cur_template='single_card_info' %}
-            {% endif %}
-        </div>
+        {% if user.is_authenticated %}
+            <div class="single-card__favorite">
+                {% include 'elements/button_favorite.html' with cur_template='single_card_info' %}
+            </div>
+        {% endif %}
     </div>
     <ul class="single-card__items">
         {% for tag in recipe.tags.all %}
@@ -13,7 +13,7 @@
         {% endfor %}  
     </ul>
     <div class="single-card__items single-card__items_column">
-        {% include 'elements/icon_time.html' with cur_template='single_card_info' %}
+        {% include 'elements/icon_time.html' with css='single-card__text' %}
         <ul class="single-card__items">
             {% include 'elements/icon_user.html' with cur_template='single_card_info' %}
             {% if user.is_authenticated and user == recipe.author %}

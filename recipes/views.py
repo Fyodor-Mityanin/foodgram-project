@@ -43,12 +43,10 @@ class AuthorList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_anonymous:
-            follow = False
-        else:
-            follow = self.request.user.authors.filter(
-                author=self.author
-            ).exists()
+        follow = (
+            self.request.user.is_authenticated
+            and self.request.user.authors.filter(author=self.author).exists()  # noqa
+        )
         context['author'] = self.author
         context['follow'] = follow
         return context
@@ -86,9 +84,8 @@ class RecipeDetail(DetailView):
         context = super().get_context_data(**kwargs)
         recipe = context['recipe']
         follow = (
-            self.request.user.is_anonymous or self.request.user.authors.filter(
-                author=recipe.author
-            ).exists()
+            self.request.user.is_authenticated
+            and self.request.user.authors.filter(author=recipe.author).exists()  # noqa
         )
         context['follow'] = follow
         return context
