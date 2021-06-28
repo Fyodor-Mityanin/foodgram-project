@@ -15,8 +15,7 @@ class SafePaginator(Paginator):
         if number < 1:
             raise EmptyPage(_('That page number is less than 1'))
         if (
-            number > self.num_pages
-            and number != 1  # noqa
+            self.num_pages < number != 1
             and not self.allow_empty_first_page  # noqa
         ):
             number = self.num_pages

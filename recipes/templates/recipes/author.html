@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}{% endblock %}
+{% block title %}{% firstof author.get_full_name author.username %}{% endblock %}
 {% load static %}
 {% block content %}
 {% if user.is_authenticated and request.user != author %}

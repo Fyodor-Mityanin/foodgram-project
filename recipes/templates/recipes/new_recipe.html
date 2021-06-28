@@ -17,7 +17,7 @@
         {% include 'blocks/form_group.html' with field=form.description css='form__textarea' %}
         {% include 'blocks/form_group.html' with field=form.image %}
         {% if form.instance == recipe %}
-        {% url 'recipe_delete' recipe.slug as recipe_delete_url %}
+        {% url 'recipes:recipe_delete' recipe.slug as recipe_delete_url %}
         {% include 'elements/button_style_blue_form.html' with text='Сохранить' url=recipe_delete_url url_text='Удалить' %}
         {% else %}
         {% include 'elements/button_style_blue_form.html' with text='Создать рецепт' %}

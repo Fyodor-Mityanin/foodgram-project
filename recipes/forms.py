@@ -19,6 +19,7 @@ class RecipeForm(models.ModelForm):
             'title',
             'image',
             'description',
+            'tags_in_recipe',
             'time_to_cook',
         )
 
@@ -84,25 +85,19 @@ class RecipeForm(models.ModelForm):
         return ingredients_in_recipe
 
     def save(self):
-        if self.errors:
-            raise ValueError(
-                "The %s could not be %s because the data didn't validate." % (
-                    self.instance._meta.object_name,
-                    'created' if self.instance._state.adding else 'changed',
-                )
-            )
-        self.instance.save()
-        self.instance.ingredients.all().delete()
+        instance = super().save()
+        cleaned_data = self.cleaned_data
+        instance.ingredients.all().delete()
         objs = [
             IngredientsInRecipe(
                 recipe=self.instance,
                 ingredient=k,
                 quantity=v,
             )
-            for k, v in self.cleaned_data['ingredients_in_recipe'].items()
+            for k, v in cleaned_data['ingredients_in_recipe'].items()
         ]
         IngredientsInRecipe.objects.bulk_create(objs)
-        return self.instance
+        return instance
 
     def list_of_unexist_ingredients(self, unexist_ingredients):
         if len(unexist_ingredients) == 1:

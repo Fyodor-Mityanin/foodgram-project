@@ -1,7 +1,7 @@
 {% load custom_filters %}
 <div class="form__group" aria-required="true">
     <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
-    <div class="form__field-group {{ time|yesno:"form__field-group_time," }}">
+    <div class="form__field-group {{ time|yesno:'form__field-group_time,' }}">
         {% with css=css %}
         {{ field|addclass:css }}
         {% endwith %}

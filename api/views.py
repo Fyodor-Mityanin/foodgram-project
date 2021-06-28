@@ -1,5 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from rest_framework import mixins, viewsets
 from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView, get_object_or_404
@@ -44,10 +43,7 @@ class CommonAPIViewSet(CreateDestroyViewSet):
 
     def get_obj(self):
         kwargs = self.get_kwargs_for_get_obj()
-        try:
-            obj = self.get_obj_model.objects.get(**kwargs)
-        except ObjectDoesNotExist:
-            return False
+        obj = get_object_or_404(self.get_obj_model, **kwargs)
         return obj
 
     def create(self, request, *args, **kwargs):
@@ -59,11 +55,12 @@ class CommonAPIViewSet(CreateDestroyViewSet):
         return UNSUCCESS_RESPONSE
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_obj()
-        if not instance:
+        try:
+            instance = self.get_obj()
+            self.perform_destroy(instance)
+            return SUCCESS_RESPONSE
+        except Http404:
             return UNSUCCESS_RESPONSE
-        self.perform_destroy(instance)
-        return SUCCESS_RESPONSE
 
 
 class SubscriptionsViewSet(CommonAPIViewSet):

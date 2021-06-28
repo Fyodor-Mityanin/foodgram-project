@@ -160,6 +160,7 @@ def recipe_edit(request, slug):
         instance=recipe,
     )
     if form.is_valid():
+        form.instance.slug = slugify(form.instance.title)[:50]
         form.save()
         return redirect(form.instance)
     return render(

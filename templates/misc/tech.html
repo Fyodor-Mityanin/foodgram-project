@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Страница не найдена{% endblock %}
+{% block title %}О проекте{% endblock %}
+{% load static %}
+{% block headcss %}
+<link rel="stylesheet" href="{% static 'recipes/pages/form.css' %}">{% endblock %}
 {% block content %}
-    <div class="custom-center-block">
-            <p class="custom-text-block">В проекте использовано:</p>
-            <p class="custom-text-block"><a href="https://docs.djangoproject.com/en/3.1/" class="single-card__text">[Django 3.1]</a></p>
-            <p class="custom-text-block"><a href="https://www.django-rest-framework.org/" class="single-card__text">[Django REST framework 3.11]</a></p>
-            <p class="custom-text-block"><a href="https://www.postgresql.org/docs/12/plperl-builtins.html" class="single-card__text">[PostgreSQL 12.4]</a></p>
-            <p class="custom-text-block"><a href="https://www.docker.com/" class="single-card__text">[Docker 20.10.2]</a></p>
+    <div class="form">
+            <div class="form__group"><p class="form__label">В проекте использовано:</p></div>
+            <div class="form__group"><p class="form__label"><a href="https://docs.djangoproject.com/en/3.1/" target="_blank">[Django 3.1]</a></p></div>
+            <div class="form__group"><p class="form__label"><a href="https://www.django-rest-framework.org/" class="single-card__text" target="_blank">[Django REST framework 3.11]</a></p></div>
+            <div class="form__group"><p class="form__label"><a href="https://www.postgresql.org/docs/12/plperl-builtins.html" class="single-card__text" target="_blank">[PostgreSQL 12.4]</a></p></div>
+            <div class="form__group"><p class="form__label"><a href="https://www.docker.com/" class="single-card__text" target="_blank">[Docker 20.10.2]</a></p></div>
          
     </div>
 {% endblock %}
